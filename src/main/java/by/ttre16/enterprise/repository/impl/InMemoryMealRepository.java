@@ -1,53 +1,75 @@
 package by.ttre16.enterprise.repository.impl;
 
 import by.ttre16.enterprise.model.Meal;
+import by.ttre16.enterprise.repository.InMemoryBaseRepository;
 import by.ttre16.enterprise.repository.MealRepository;
+import by.ttre16.enterprise.util.DateTimeUtil;
+import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-import static by.ttre16.enterprise.util.MealUtil.baseMeals;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
+
+@Repository
 public class InMemoryMealRepository implements MealRepository {
+    private final Map<Integer, InMemoryBaseRepository<Meal>> userMeals =
+            new ConcurrentHashMap<>();
 
-    private final AtomicInteger counter = new AtomicInteger(0);
-
-    private final Map<Integer, Meal> meals = new ConcurrentHashMap<>();
-
-    {
-        baseMeals().forEach(this::save);
+    @Override
+    public Meal save(Integer userId, Meal meal) {
+        userMeals.computeIfAbsent(userId,
+                uid -> new InMemoryBaseRepository<>());
+        InMemoryBaseRepository<Meal> meals = userMeals
+                .computeIfAbsent(userId, uid -> new InMemoryBaseRepository<>());
+        return meals.save(meal);
     }
 
     @Override
-    public Meal save(Meal meal) {
-        if (meal.isNew()) {
-            meal.setId(counter.incrementAndGet());
-            meals.put(meal.getId(), meal);
-            return meal;
-        }
-        return meals.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+    public boolean deleteOne(Integer userId, Integer mealId) {
+        InMemoryBaseRepository<Meal> meals = userMeals.get(userId);
+        return nonNull(meals) && meals.delete(mealId);
     }
 
     @Override
-    public boolean deleteById(Integer id) {
-        return meals.remove(id) != null;
+    public Optional<Meal> getOne(Integer userId, Integer mealId) {
+        InMemoryBaseRepository<Meal> meals = userMeals.get(userId);
+        return  isNull(meals)
+                ? Optional.empty()
+                : meals.get(mealId);
     }
 
     @Override
-    public Optional<Meal> getById(Integer id) {
-        return Optional.ofNullable(meals.get(id));
+    public Collection<Meal> getAll(Integer id) {
+        return filterByPredicate(id, meal -> true);
     }
 
     @Override
-    public Collection<Meal> getAll() {
-        return meals.values();
+    public boolean deleteAll(Integer userId) {
+        return nonNull(userMeals.remove(userId));
     }
 
     @Override
-    public boolean existsById(Integer id) {
-        return meals.containsKey(id);
+    public Collection<Meal> getBetweenHalfOpen(LocalDateTime startDateTime,
+            LocalDateTime endDateTime, int userId) {
+        return filterByPredicate(userId,
+                meal -> DateTimeUtil.isBetweenHalfOpen(
+                        meal.getDateTime(), startDateTime, endDateTime));
+    }
+
+    public Collection<Meal> filterByPredicate(Integer userId,
+            Predicate<? super Meal> filter) {
+        InMemoryBaseRepository<Meal> meals = userMeals.get(userId);
+        return isNull(meals)
+                ? Collections.emptyList()
+                : meals.getCollection().stream()
+                    .filter(filter)
+                    .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+                    .collect(Collectors.toList());
     }
 }

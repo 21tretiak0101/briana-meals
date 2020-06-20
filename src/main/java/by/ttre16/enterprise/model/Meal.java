@@ -3,26 +3,18 @@ package by.ttre16.enterprise.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class Meal {
-    private Integer id;
+public class Meal extends AbstractBaseEntity{
     private final Integer calories;
     private final LocalDateTime dateTime;
     private final String description;
 
-    public Meal(Integer id, Integer calories, LocalDateTime dateTime,
-                String description) {
+    public Meal(Integer id, Integer calories,
+                LocalDateTime dateTime, String description) {
+        super(id);
         this.id = id;
         this.calories = calories;
         this.dateTime = dateTime;
         this.description = description;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getId() {
-        return id;
     }
 
     public Integer getCalories() {
@@ -39,10 +31,6 @@ public class Meal {
 
     public String getDescription() {
         return description;
-    }
-
-    public boolean isNew() {
-        return id == null;
     }
 
     @Override

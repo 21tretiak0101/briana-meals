@@ -7,7 +7,7 @@
 <body>
     <form action="meals" method="post">
         <strong>
-            ${param.id != null ? 'Update meal #': 'Create meal'}${param.id}
+            ${param.mealId != null ? 'Update meal #': 'Create meal'}${param.mealId}
         </strong>
         <hr>
         <span>Calories</span>
@@ -23,7 +23,7 @@
         <input type="datetime-local" name="dateTime" value="${param.dateTime}" required>
         <br>
         <input type="hidden" name="action" value="${param.action}">
-        <input type="hidden" name="id" value="${param.id}">
+        <input type="hidden" name="mealId" value="${param.mealId}">
         <button type="submit">Submit</button>
         <button onclick="window.history.back()">Cancel</button>
     </form>
