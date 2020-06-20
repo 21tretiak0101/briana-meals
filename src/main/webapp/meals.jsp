@@ -10,6 +10,29 @@
 <body>
     <a href="index.html">Home</a>
     <br>
+
+    <div>
+            <form method="get" action="meals">
+                <input type="hidden" name="action" value="filter">
+                <dl>
+                    <dt>From Date (inclusive):</dt>
+                    <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
+                </dl>
+                <dl>
+                    <dt>To Date (inclusive):</dt>
+                    <dd><input type="date" name="endDate" value="${param.endDate}"></dd>
+                </dl>
+                <dl>
+                    <dt>From Time (inclusive):</dt>
+                    <dd><input type="time" name="startTime" value="${param.startTime}"></dd>
+                </dl>
+                <dl>
+                    <dt>To Time (exclusive):</dt>
+                    <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
+                </dl>
+                <button type="submit">Filter</button>
+            </form>
+    </div>
     <div>
         <c:set var="meals" value="${requestScope.meals}"/>
         <c:if test="${not empty meals}">
@@ -32,14 +55,14 @@
                         <td>${meal.description}</td>
                         <td>
                             <form action="meals" method="post">
-                                <input value="${meal.id}" type="hidden" name="id"/>
+                                <input value="${meal.id}" type="hidden" name="mealId"/>
                                 <input value="${ActionType.DELETE}" type="hidden" name="action">
                                 <button type="submit">Delete</button>
                             </form>
                         </td>
                         <td>
                             <form action="editMeal.jsp">
-                                <input type="hidden" name="id" value="${meal.id}">
+                                <input type="hidden" name="mealId" value="${meal.id}">
                                 <input type="hidden" name="dateTime" value="${meal.dateTime}">
                                 <input type="hidden" name="calories" value="${meal.calories}">
                                 <input type="hidden" name="description" value="${meal.description}">
