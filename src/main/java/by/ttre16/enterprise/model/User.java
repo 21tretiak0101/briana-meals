@@ -1,21 +1,55 @@
 package by.ttre16.enterprise.model;
 
-import by.ttre16.enterprise.util.MealUtil;
-
 import java.util.Date;
 import java.util.Set;
+
+import static by.ttre16.enterprise.util.MealUtil.DEFAULT_CALORIES_PER_DAY;
 
 public class User extends AbstractNamedEntity {
     private String email;
     private String password;
     private boolean enabled = true;
-    private final Date registered = new Date();
+    private Date registered = new Date();
     private Set<Role> roles;
-    private final Integer caloriesPerDay = MealUtil.DEFAULT_CALORIES_PER_DAY;
+
+    public void setRegistered(Date registered) {
+        this.registered = registered;
+    }
+
+    public void setCaloriesPerDay(Integer caloriesPerDay) {
+        this.caloriesPerDay = caloriesPerDay;
+    }
+
+    private Integer caloriesPerDay = DEFAULT_CALORIES_PER_DAY;
 
     public User(Integer id, String name) {
         super(id, name);
     }
+
+    public User(Integer id, String name, String email, String password,
+            boolean enabled, Set<Role> roles) {
+        this(id, name, email, password, enabled, new Date(), roles,
+                DEFAULT_CALORIES_PER_DAY);
+    }
+
+    public User(Integer id, String name, String email, String password,
+            boolean enabled, Date registered, Set<Role> roles,
+            Integer caloriesPerDay) {
+        super(id, name);
+        this.email = email;
+        this.password = password;
+        this.enabled = enabled;
+        this.registered = registered;
+        this.roles = roles;
+        this.caloriesPerDay = caloriesPerDay;
+    }
+
+    public User(User user) {
+        this(user.id, user.name, user.email, user.password, user.enabled,
+                 user.registered ,user.roles, user.caloriesPerDay);
+    }
+
+    public User() { }
 
     public String getEmail() {
         return email;

@@ -14,16 +14,15 @@ import static by.ttre16.enterprise.util.DateTimeUtil.isBetweenHalfOpen;
 import static java.util.Objects.isNull;
 
 public class MealUtil {
-    public static Integer DEFAULT_CALORIES_PER_DAY = 1000;
+    public static Integer DEFAULT_CALORIES_PER_DAY = 2000;
 
     public static List<MealTo> getMealsWithExcess(List<Meal> meals,
             LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         LocalTime start = isNull(startTime) ? LocalTime.MIN : startTime;
         LocalTime end = isNull(endTime) ? LocalTime.MAX : endTime;
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
-                .collect(Collectors.groupingBy(
-                        Meal::getDate, Collectors.summingInt(
-                                Meal::getCalories)));
+                .collect(Collectors.groupingBy(Meal::getDate,
+                        Collectors.summingInt(Meal::getCalories)));
         return meals.stream()
                 .filter(meal -> isBetweenHalfOpen(
                         meal.getDateTime().toLocalTime(), start, end))
