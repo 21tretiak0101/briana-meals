@@ -6,10 +6,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
+import static java.util.Objects.*;
 
 public class DateTimeUtil {
     private static final DateTimeFormatter DATE_TIME_FORMATTER =
@@ -37,15 +35,35 @@ public class DateTimeUtil {
     }
 
 
-    public static LocalDateTime atStartOfDayOrMin(LocalDate ldt) {
+    public static LocalDateTime atStartOfDayOrMin(LocalDateTime ldt) {
         return nonNull(ldt)
-                ? ldt.atStartOfDay()
+                ? ldt
                 : MIN_DATE;
     }
 
-    public static LocalDateTime atStartOfNextDayOrMax(LocalDate ldt) {
+    public static LocalDateTime atEndOfDayOrMax(LocalDateTime ldt) {
         return nonNull(ldt)
-                ? ldt.plus(1, ChronoUnit.DAYS).atStartOfDay()
+                ? ldt
                 : MAX_DATE;
+    }
+
+    public static LocalDateTime atStartOfDayOrMin(LocalDate ld, LocalTime lt) {
+        if (isNull(ld)) {
+            return MIN_DATE;
+        }
+        if (isNull(lt)) {
+            return ld.atStartOfDay();
+        }
+        return LocalDateTime.of(ld, lt);
+    }
+
+    public static LocalDateTime atEndOfDayOrMax(LocalDate ld, LocalTime lt) {
+        if (isNull(ld)) {
+            return MAX_DATE;
+        }
+        if (isNull(lt)) {
+            return ld.atStartOfDay();
+        }
+        return LocalDateTime.of(ld, lt);
     }
 }

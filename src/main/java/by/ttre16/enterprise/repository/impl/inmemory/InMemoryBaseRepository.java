@@ -1,4 +1,4 @@
-package by.ttre16.enterprise.repository;
+package by.ttre16.enterprise.repository.impl.inmemory;
 
 import by.ttre16.enterprise.model.AbstractBaseEntity;
 

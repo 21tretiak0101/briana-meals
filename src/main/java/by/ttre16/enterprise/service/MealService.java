@@ -1,22 +1,21 @@
 package by.ttre16.enterprise.service;
 
 import by.ttre16.enterprise.model.Meal;
-import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.repository.MealRepository;
-import by.ttre16.enterprise.repository.impl.InMemoryMealRepository;
+import by.ttre16.enterprise.repository.impl.inmemory.InMemoryMealRepository;
+import by.ttre16.enterprise.util.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static by.ttre16.enterprise.util.DateTimeUtil.atStartOfDayOrMin;
-import static by.ttre16.enterprise.util.DateTimeUtil.atStartOfNextDayOrMax;
+import static by.ttre16.enterprise.util.DateTimeUtil.atEndOfDayOrMax;
 import static by.ttre16.enterprise.util.ValidationUtil.checkNotFoundWithId;
-import static java.util.Objects.nonNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -39,38 +38,30 @@ public class MealService {
 
     public Meal save(Integer userId, Meal meal) {
         Meal savedMeal = this.repository.save(userId, meal);
-        if (nonNull(savedMeal)) {
-            log.info(meal.isNew()
-                    ? "Meal with id: '{}' created."
-                    : "Meal with id: '{}' updated.",
-                    savedMeal.getId());
-        } else {
-            log.warn("Meal with id: '{}' doesn't exist.", meal.getId());
-        }
+        log.warn("Save meal with id: '{}'.", meal.getId());
         return savedMeal;
     }
 
     public void delete(Integer userId, Integer mealId) {
-        boolean isDeleted = this.repository.deleteOne(userId, mealId);
-        if (isDeleted) {
-            log.info("Meal with id: '{}' removed.", mealId);
-        } else {
-            log.warn("Meal with id: '{}' doesn't exist.", mealId);
-        }
+        checkNotFoundWithId(this.repository.deleteOne(userId, mealId), mealId);
+        log.info("Delete meal with id: '{}'.", mealId);
     }
 
     public Meal getOne(Integer userId, Integer mealId) {
-        return repository.getOne(userId, mealId).orElse(null);
+        log.info("Get meal with id: '{}'.", mealId);
+        return repository.getOne(userId, mealId)
+                .orElseThrow(() -> new NotFoundException("Meal not found"));
     }
 
-    public List<Meal> getBetweenInclusive(@Nullable LocalDate startDate,
-            @Nullable LocalDate endDate, int userId) {
+    public List<Meal> getBetweenInclusive(@Nullable LocalDateTime startDate,
+            @Nullable LocalDateTime endDate, int userId) {
         return new ArrayList<>(repository.getBetweenHalfOpen(
                 atStartOfDayOrMin(startDate),
-                atStartOfNextDayOrMax(endDate), userId));
+                atEndOfDayOrMax(endDate), userId));
     }
 
     public void update(Meal meal, int userId) {
+        log.info("Update meal with id: '{}'.", meal.getId());
         checkNotFoundWithId(repository.save(userId, meal), meal.getId());
     }
 }
