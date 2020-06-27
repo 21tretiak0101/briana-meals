@@ -2,13 +2,11 @@ package by.ttre16.enterprise.service;
 
 import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.repository.UserRepository;
-import by.ttre16.enterprise.util.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import static by.ttre16.enterprise.util.ValidationUtil.checkNotFound;
 import static by.ttre16.enterprise.util.ValidationUtil.checkNotFoundWithId;
@@ -29,14 +27,16 @@ public class UserService {
     }
 
     public void delete(Integer id) {
-        log.warn("Delete user with id: '{}' get.", id);
-        checkNotFoundWithId(this.repository.deleteById(id), id);
+        boolean isDeleted = this.repository.deleteById(id);
+        if (isDeleted) {
+            log.info("Meal with id: '{}' removed.", id);
+        } else {
+            log.warn("Meal with id: '{}' doesn't exist.", id);
+        }
     }
 
-    public User get(Integer id) {
-        log.info("Get user with id: '{}'.", id);
-        return repository.get(id)
-                .orElseThrow(() -> new NotFoundException("User not Found"));
+    public User get(int id) {
+        return repository.get(id).orElse(null);
     }
 
     public User getByEmail(String email) {
@@ -45,8 +45,8 @@ public class UserService {
                 .orElse(null), "email=" + email);
     }
 
-    public List<User> getAll() {
-        return new ArrayList<>(repository.getAll());
+    public Collection<User> getAll() {
+        return repository.getAll();
     }
 
     public void update(User user) {

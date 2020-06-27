@@ -1,6 +1,7 @@
-package by.ttre16.enterprise.repository.impl.inmemory;
+package by.ttre16.enterprise.repository.impl;
 
 import by.ttre16.enterprise.model.User;
+import by.ttre16.enterprise.repository.InMemoryBaseRepository;
 import by.ttre16.enterprise.repository.MealRepository;
 import by.ttre16.enterprise.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
