@@ -1,7 +1,6 @@
-package by.ttre16.enterprise.repository.impl;
+package by.ttre16.enterprise.repository.impl.inmemory;
 
 import by.ttre16.enterprise.model.Meal;
-import by.ttre16.enterprise.repository.InMemoryBaseRepository;
 import by.ttre16.enterprise.repository.MealRepository;
 import by.ttre16.enterprise.util.DateTimeUtil;
 import org.springframework.stereotype.Repository;
@@ -15,7 +14,6 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-
 @Repository
 public class InMemoryMealRepository implements MealRepository {
     private final Map<Integer, InMemoryBaseRepository<Meal>> userMeals =
@@ -23,8 +21,6 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal save(Integer userId, Meal meal) {
-        userMeals.computeIfAbsent(userId,
-                uid -> new InMemoryBaseRepository<>());
         InMemoryBaseRepository<Meal> meals = userMeals
                 .computeIfAbsent(userId, uid -> new InMemoryBaseRepository<>());
         return meals.save(meal);

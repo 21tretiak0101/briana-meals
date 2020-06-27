@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<configuration scan="true" scanPeriod="30 seconds">
+<configuration scan="false" scanPeriod="30 seconds">
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
       <encoder>
           <charset>UTF-8</charset>
@@ -16,8 +16,9 @@
     </appender>
 
     <logger name="by.ttre16.enterprise" level="DEBUG"/>
+    <logger name="org.springframework.jdbc" level="DEBUG"/>
 
-    <root>
+    <root level="WARN">
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="FILE" />
     </root>
