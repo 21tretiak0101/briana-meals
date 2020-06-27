@@ -8,8 +8,6 @@ public abstract class AbstractNamedEntity extends AbstractBaseEntity {
         this.name = name;
     }
 
-    public AbstractNamedEntity() { }
-
     public String getName() {
         return name;
     }

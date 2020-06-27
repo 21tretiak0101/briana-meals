@@ -14,8 +14,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static by.ttre16.enterprise.util.DateTimeUtil.atEndOfDayOrMax;
-import static by.ttre16.enterprise.util.DateTimeUtil.atStartOfDayOrMin;
 import static by.ttre16.enterprise.util.MealUtil.getMealsWithExcess;
 import static by.ttre16.enterprise.util.SecurityUtil.authUserCaloriesPerDay;
 import static by.ttre16.enterprise.util.ValidationUtil.assureIdConsistent;
@@ -44,11 +42,11 @@ public class MealRestController {
         return service.getOne(userId, id);
     }
 
-    public void create(Meal meal) {
+    public Meal create(Meal meal) {
         int userId = SecurityUtil.authUserId();
         log.info("create {}", meal);
         checkNew(meal);
-        service.save(userId, meal);
+        return service.save(userId, meal);
     }
 
     public void delete(Integer id) {
@@ -71,9 +69,7 @@ public class MealRestController {
         log.info("getBetween dates({} - {}) time({} - {}) for user {}",
                 startDate, endDate, startTime, endTime, userId);
         List<Meal> mealsDateFiltered = service.getBetweenInclusive(
-                atStartOfDayOrMin(startDate, startTime),
-                atEndOfDayOrMax(endDate, endTime),
-                userId);
+                startDate, endDate, userId);
         return getMealsWithExcess(mealsDateFiltered,
                 startTime, endTime, authUserCaloriesPerDay());
     }

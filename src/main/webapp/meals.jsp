@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ page import="by.ttre16.enterprise.util.ActionType" %>
@@ -16,35 +16,19 @@
                 <input type="hidden" name="action" value="filter">
                 <dl>
                     <dt>From Date (inclusive):</dt>
-                    <dd>
-                        <label>
-                            <input type="date" name="startDate" value="${param.startDate}">
-                        </label>
-                    </dd>
+                    <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
                 </dl>
                 <dl>
                     <dt>To Date (inclusive):</dt>
-                    <dd>
-                        <label>
-                            <input type="date" name="endDate" value="${param.endDate}">
-                        </label>
-                    </dd>
+                    <dd><input type="date" name="endDate" value="${param.endDate}"></dd>
                 </dl>
                 <dl>
                     <dt>From Time (inclusive):</dt>
-                    <dd>
-                        <label>
-                            <input type="time" name="startTime" value="${param.startTime}">
-                        </label>
-                    </dd>
+                    <dd><input type="time" name="startTime" value="${param.startTime}"></dd>
                 </dl>
                 <dl>
                     <dt>To Time (exclusive):</dt>
-                    <dd>
-                        <label>
-                            <input type="time" name="endTime" value="${param.endTime}">
-                    </label>
-                    </dd>
+                    <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
                 </dl>
                 <button type="submit">Filter</button>
             </form>

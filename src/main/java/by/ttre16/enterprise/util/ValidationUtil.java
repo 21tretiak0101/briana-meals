@@ -6,12 +6,12 @@ import by.ttre16.enterprise.util.exception.NotFoundException;
 import static java.util.Objects.nonNull;
 
 public class ValidationUtil {
-    public static <T> T checkNotFoundWithId(T object, Integer id) {
+    public static <T> T checkNotFoundWithId(T object, int id) {
         checkNotFoundWithId(nonNull(object), id);
         return object;
     }
 
-    public static void checkNotFoundWithId(boolean found, Integer id) {
+    public static void checkNotFoundWithId(boolean found, int id) {
         checkNotFound(found, "id=" + id);
     }
 

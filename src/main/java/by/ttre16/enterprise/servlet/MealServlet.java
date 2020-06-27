@@ -1,12 +1,10 @@
 package by.ttre16.enterprise.servlet;
 
-import by.ttre16.enterprise.configuration.ApplicationConfiguration;
 import by.ttre16.enterprise.controller.MealRestController;
 import by.ttre16.enterprise.dto.MealTo;
 import by.ttre16.enterprise.model.Meal;
 import org.slf4j.Logger;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.servlet.ServletConfig;
@@ -32,8 +30,7 @@ public class MealServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        context = new AnnotationConfigApplicationContext(
-                ApplicationConfiguration.class);
+        context = new ClassPathXmlApplicationContext("context.xml");
         controller = context.getBean(MealRestController.class);
     }
 
