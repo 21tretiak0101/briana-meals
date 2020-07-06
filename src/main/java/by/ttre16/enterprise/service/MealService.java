@@ -1,13 +1,16 @@
 package by.ttre16.enterprise.service;
 
+import by.ttre16.enterprise.annotation.QualifierRepository;
 import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.repository.MealRepository;
 import by.ttre16.enterprise.repository.impl.inmemory.InMemoryMealRepository;
+import by.ttre16.enterprise.repository.impl.jpa.JpaMealRepository;
 import by.ttre16.enterprise.util.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,7 +27,9 @@ public class MealService {
     private static final Logger log = getLogger(MealService.class);
 
     @Autowired
-    public MealService(MealRepository repository) {
+    public MealService(
+            @QualifierRepository(JpaMealRepository.class)
+                    MealRepository repository) {
         this.repository = repository;
     }
 
@@ -36,12 +41,14 @@ public class MealService {
         return new ArrayList<>(repository.getAll(userId));
     }
 
+    @Transactional
     public Meal save(Integer userId, Meal meal) {
         Meal savedMeal = this.repository.save(userId, meal);
         log.warn("Save meal with id: '{}'.", meal.getId());
         return savedMeal;
     }
 
+    @Transactional
     public void delete(Integer userId, Integer mealId) {
         checkNotFoundWithId(this.repository.deleteOne(userId, mealId), mealId);
         log.info("Delete meal with id: '{}'.", mealId);
@@ -60,6 +67,7 @@ public class MealService {
                 atEndOfDayOrMax(endDate), userId));
     }
 
+    @Transactional
     public void update(Meal meal, int userId) {
         log.info("Update meal with id: '{}'.", meal.getId());
         checkNotFoundWithId(repository.save(userId, meal), meal.getId());

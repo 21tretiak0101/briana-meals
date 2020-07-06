@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS roles;
 DROP SEQUENCE IF EXISTS global_seq;
 
-CREATE SEQUENCE global_seq START WITH 100000;
+CREATE SEQUENCE global_seq START WITH 10000;
 
 CREATE TABLE users (
     id               INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
@@ -31,7 +31,6 @@ CREATE TABLE user_roles (
     CONSTRAINT user_roles_idx UNIQUE (user_id, role_id)
 );
 
-
 CREATE TABLE meals (
     id          INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
     user_id     INTEGER     NOT NULL,
@@ -42,4 +41,4 @@ CREATE TABLE meals (
 );
 
 CREATE UNIQUE INDEX meals_unique_user_datetime_idx ON meals (user_id, date_time);
-INSERT INTO roles(name) VALUES ('ROLE_USER'), ('ROLE_ADMIN') ;
+INSERT INTO roles(id, name) VALUES (9998, 'ADMIN'), (9999, 'USER') ;

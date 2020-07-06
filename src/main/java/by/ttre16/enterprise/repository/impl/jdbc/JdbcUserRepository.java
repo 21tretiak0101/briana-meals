@@ -18,7 +18,6 @@ import java.util.Optional;
 import static org.springframework.dao.support.DataAccessUtils.singleResult;
 
 @Repository
-@Primary
 public class JdbcUserRepository implements UserRepository {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;

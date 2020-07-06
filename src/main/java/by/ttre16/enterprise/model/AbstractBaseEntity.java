@@ -1,8 +1,15 @@
 package by.ttre16.enterprise.model;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@MappedSuperclass
 public abstract class AbstractBaseEntity {
+    @Id
+    @SequenceGenerator(name = "sequence", sequenceName = "global_seq",
+            initialValue = 100000, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "sequence")
     protected Integer id;
 
     public AbstractBaseEntity(Integer id) {

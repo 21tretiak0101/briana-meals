@@ -1,6 +1,13 @@
 package by.ttre16.enterprise.model;
 
-public enum Role {
-    USER,
-    ADMIN
+import javax.persistence.*;
+
+@Entity
+@Table(name = "ROLES")
+public class Role extends AbstractNamedEntity {
+    public Role() { }
+
+    public Role(Integer id, String name) {
+        super(id, name);
+    }
 }

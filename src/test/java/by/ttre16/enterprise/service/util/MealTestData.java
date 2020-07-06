@@ -7,9 +7,8 @@ import java.util.*;
 
 import static java.time.LocalDateTime.of;
 
-
 public class MealTestData extends TestData {
-    public static Map<Integer, Map<Integer, Meal>> MEALS = new HashMap<>();
+    public static final Map<Integer, Map<Integer, Meal>> MEALS = new HashMap<>();
     public static final Integer MEAL3_ID = 3;
     public static final Integer MEAL4_ID = 4;
     public static final Integer MEAL5_ID = 5;
@@ -45,12 +44,12 @@ public class MealTestData extends TestData {
     }
 
     public static void assertMatch(Meal expected, Meal actual) {
-        AssertUtil.assertMatch(expected, actual, "dateTime");
+        AssertUtil.assertMatch(expected, actual, "dateTime", "user");
     }
 
     public static void assertMatch(Iterable<Meal> expected,
             Iterable<Meal> actual) {
-        AssertUtil.assertMatch(expected, actual, "dateTime");
+        AssertUtil.assertMatch(expected, actual, "dateTime", "user");
     }
 
     public static Meal getUpdated(Integer userId, Integer mealId) {
