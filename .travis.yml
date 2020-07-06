@@ -1,2 +1,17 @@
 language: java
-jdk: oraclejdk9
+jdk: openjdk14
+
+cache:
+  directories:
+    - $HOME/.m2
+
+before_script:
+  - psql -c 'create database enterprise' -U postgres
+  - psql -c 'create user "user"; grant all privileges on database enterprise to "user"' -U postgres
+
+branches:
+  only:
+    - master
+
+services:
+  - postgresql
