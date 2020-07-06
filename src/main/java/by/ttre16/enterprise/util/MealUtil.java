@@ -14,7 +14,7 @@ import static by.ttre16.enterprise.util.DateTimeUtil.isBetweenHalfOpen;
 import static java.util.Objects.isNull;
 
 public class MealUtil {
-    public static Integer DEFAULT_CALORIES_PER_DAY = 2000;
+    public static final Integer DEFAULT_CALORIES_PER_DAY = 2000;
 
     public static List<MealTo> getMealsWithExcess(List<Meal> meals,
             LocalTime startTime, LocalTime endTime, int caloriesPerDay) {

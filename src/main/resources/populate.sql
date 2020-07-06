@@ -7,9 +7,9 @@ INSERT INTO users(id, name, email, password, enabled) VALUES
     (2, 'admin', 'admin@mail.com', 'password88-2', true);
 
 INSERT INTO user_roles (user_id, role_id) VALUES
-    (1, 100000),
-    (2, 100000),
-    (2, 100001);
+    (1, 9999),
+    (2, 9999),
+    (2, 9998);
 
 INSERT INTO meals(id, user_id, calories, date_time, description) VALUES
     (3, 1, 999, '2020-05-13 20:00', 'some meal'),

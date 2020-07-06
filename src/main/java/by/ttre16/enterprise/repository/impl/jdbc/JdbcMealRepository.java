@@ -3,7 +3,6 @@ package by.ttre16.enterprise.repository.impl.jdbc;
 import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.repository.MealRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -19,7 +18,6 @@ import java.util.Optional;
 import static org.springframework.dao.support.DataAccessUtils.singleResult;
 
 @Repository
-@Primary
 public class JdbcMealRepository implements MealRepository {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -87,7 +85,7 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public Collection<Meal> getBetweenHalfOpen(LocalDateTime startDateTime,
-            LocalDateTime endDateTime, int userId) {
+                                               LocalDateTime endDateTime, Integer userId) {
         return jdbcTemplate.query(
                 "SELECT * FROM meals WHERE user_id = ? " +
                 "AND date_time >= ? AND date_time < ? ORDER BY date_time DESC",

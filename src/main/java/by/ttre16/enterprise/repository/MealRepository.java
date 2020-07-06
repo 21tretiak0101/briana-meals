@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface MealRepository {
+public interface MealRepository extends AppRepository {
      Collection<Meal> getAll(Integer userId);
 
      Meal save(Integer id, Meal meal);
@@ -18,5 +18,5 @@ public interface MealRepository {
      boolean deleteAll(Integer userId);
 
      Collection<Meal> getBetweenHalfOpen(LocalDateTime startDateTime,
-               LocalDateTime endDateTime, int userId);
+               LocalDateTime endDateTime, Integer userId);
 }

@@ -1,11 +1,14 @@
 package by.ttre16.enterprise.service;
 
+import by.ttre16.enterprise.annotation.QualifierRepository;
 import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.repository.UserRepository;
+import by.ttre16.enterprise.repository.impl.jpa.JpaUserRepository;
 import by.ttre16.enterprise.util.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,14 +23,18 @@ public class UserService {
     private static final Logger log = getLogger(UserService.class);
 
     @Autowired
-    public UserService(UserRepository repository) {
+    public UserService(
+            @QualifierRepository(JpaUserRepository.class)
+                    UserRepository repository) {
         this.repository = repository;
     }
 
+    @Transactional
     public User create(User user) {
         return repository.save(user);
     }
 
+    @Transactional
     public void delete(Integer id) {
         log.warn("Delete user with id: '{}' get.", id);
         checkNotFoundWithId(this.repository.deleteById(id), id);
@@ -49,6 +56,7 @@ public class UserService {
         return new ArrayList<>(repository.getAll());
     }
 
+    @Transactional
     public void update(User user) {
         checkNotFoundWithId(repository.save(user), user.getId());
     }

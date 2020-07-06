@@ -8,7 +8,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
+
+import static java.util.Objects.hash;
 
 @Entity
 @Table(name = "meals")
@@ -26,18 +27,18 @@ public class Meal extends AbstractBaseEntity {
     public static final String DELETE_ONE = "Meal.deleteOne";
     public static final String DELETE_ALL = "Meal.deleteAll";
 
-    @Column(name = "calories")
     @Range(min = 10, max = 5000)
     @NotNull
+    @Column(name = "calories", nullable = false)
     private Integer calories;
 
-    @Column(name = "date_time", nullable = false)
     @NotNull
+    @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
 
-    @Column(name = "description", nullable = false)
     @Size(min = 2, max = 120)
     @NotBlank
+    @Column(name = "description", nullable = false)
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
@@ -108,10 +109,11 @@ public class Meal extends AbstractBaseEntity {
     @Override
     public String toString() {
         return "Meal{" +
-                "id=" + id +
-                ", calories=" + calories +
+                "calories=" + calories +
                 ", dateTime=" + dateTime +
                 ", description='" + description + '\'' +
+                ", userId=" + user.getId() +
+                ", id=" + id +
                 '}';
     }
 
@@ -123,11 +125,12 @@ public class Meal extends AbstractBaseEntity {
         Meal meal = (Meal) o;
         return calories.equals(meal.calories) &&
                 dateTime.equals(meal.dateTime) &&
-                Objects.equals(description, meal.description);
+                description.equals(meal.description) &&
+                user.getId().equals(meal.user.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), calories, dateTime, description);
+        return hash(super.hashCode(), calories, dateTime, description, user.id);
     }
 }

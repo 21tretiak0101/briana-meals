@@ -4,10 +4,10 @@ import by.ttre16.enterprise.configuration.ApplicationConfiguration;
 import by.ttre16.enterprise.controller.MealRestController;
 import by.ttre16.enterprise.dto.MealTo;
 import by.ttre16.enterprise.model.Meal;
+import by.ttre16.enterprise.model.User;
 import org.slf4j.Logger;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -46,7 +46,6 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        Integer userId = getParameter(req, "userId", Integer::parseInt);
         LocalDate startDate = getParameter(req, "startDate",
                 LocalDate::parse);
         LocalDate endDate = getParameter(req, "endDate",
@@ -71,7 +70,8 @@ public class MealServlet extends HttpServlet {
         String description = req.getParameter("description");
         LocalDateTime dateTime = getParameter(req, "dateTime",
                 LocalDateTime::parse);
-        Meal meal = new Meal(mealId, calories, dateTime, description);
+        Meal meal = new Meal(mealId, calories, dateTime, description,
+                new User(userId));
         String action = req.getParameter("action");
         switch (action) {
             case CREATE:

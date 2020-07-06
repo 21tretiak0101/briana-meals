@@ -30,6 +30,7 @@
         <br>
         <input type="hidden" name="action" value="${param.action}">
         <input type="hidden" name="mealId" value="${param.mealId}">
+        <input type="hidden" name="userId" value="1">
         <button type="submit">Submit</button>
         <button onclick="window.history.back()">Cancel</button>
     </form>

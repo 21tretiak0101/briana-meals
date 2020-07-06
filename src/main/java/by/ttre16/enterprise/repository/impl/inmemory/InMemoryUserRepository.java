@@ -1,5 +1,6 @@
 package by.ttre16.enterprise.repository.impl.inmemory;
 
+import by.ttre16.enterprise.annotation.QualifierRepository;
 import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.repository.MealRepository;
 import by.ttre16.enterprise.repository.UserRepository;
@@ -18,7 +19,9 @@ public class InMemoryUserRepository extends InMemoryBaseRepository<User>
     private final MealRepository mealRepository;
 
     @Autowired
-    public InMemoryUserRepository(MealRepository mealRepository) {
+    public InMemoryUserRepository(
+            @QualifierRepository(InMemoryMealRepository.class)
+                    MealRepository mealRepository) {
         this.mealRepository = mealRepository;
     }
 

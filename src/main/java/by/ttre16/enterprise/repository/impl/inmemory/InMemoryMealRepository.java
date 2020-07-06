@@ -1,5 +1,6 @@
 package by.ttre16.enterprise.repository.impl.inmemory;
 
+import by.ttre16.enterprise.annotation.QualifierRepository;
 import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.repository.MealRepository;
 import by.ttre16.enterprise.util.DateTimeUtil;
@@ -15,6 +16,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Repository
+@QualifierRepository(InMemoryMealRepository.class)
 public class InMemoryMealRepository implements MealRepository {
     private final Map<Integer, InMemoryBaseRepository<Meal>> userMeals =
             new ConcurrentHashMap<>();
@@ -52,7 +54,7 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Collection<Meal> getBetweenHalfOpen(LocalDateTime startDateTime,
-            LocalDateTime endDateTime, int userId) {
+            LocalDateTime endDateTime, Integer userId) {
         return filterByPredicate(userId,
                 meal -> DateTimeUtil.isBetweenHalfOpen(
                         meal.getDateTime(), startDateTime, endDateTime));
