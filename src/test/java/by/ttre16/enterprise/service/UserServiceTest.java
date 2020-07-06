@@ -3,15 +3,19 @@ package by.ttre16.enterprise.service;
 import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.util.exception.NotFoundException;
 import org.junit.Test;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static by.ttre16.enterprise.service.util.UserTestData.*;
 import static org.junit.Assert.assertThrows;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class UserServiceTest extends AbstractServiceTest {
+    private static final Logger log = getLogger(UserServiceTest.class);
 
     @Autowired
     private UserService service;
@@ -29,7 +33,7 @@ public class UserServiceTest extends AbstractServiceTest {
     @Test
     public void createWithDuplicateEmail() {
         User oldUser = USERS.get(USER_ID);
-        User duplicate = new User();
+        User duplicate = getNew();
         duplicate.setEmail(oldUser.getEmail());
         assertThrows(DataAccessException.class,
                 () -> service.create(duplicate));
@@ -43,10 +47,12 @@ public class UserServiceTest extends AbstractServiceTest {
     }
 
     @Test
+    @Transactional
     public void get() {
-        Integer uid = USER_ID;
+        Integer uid = ADMIN_ID;
         User user = service.get(uid);
-        System.out.println(user);
+        log.info("get one user: {}", user);
+        user.getRoles().forEach(System.out::println);
         assertMatch(USERS.get(uid), user);
     }
 
@@ -60,7 +66,7 @@ public class UserServiceTest extends AbstractServiceTest {
     @Test
     public void getAll() {
         List<User> users = service.getAll();
-        System.out.println(users);
+        users.forEach(u -> log.info("{}\n", u));
         assertMatch(USERS.values(), users);
     }
 
