@@ -3,8 +3,8 @@ package by.ttre16.enterprise.service;
 import by.ttre16.enterprise.annotation.QualifierRepository;
 import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.repository.MealRepository;
+import by.ttre16.enterprise.repository.impl.datajpa.DataJpaMealRepository;
 import by.ttre16.enterprise.repository.impl.inmemory.InMemoryMealRepository;
-import by.ttre16.enterprise.repository.impl.jpa.JpaMealRepository;
 import by.ttre16.enterprise.util.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class MealService {
 
     @Autowired
     public MealService(
-            @QualifierRepository(JpaMealRepository.class)
+            @QualifierRepository(DataJpaMealRepository.class)
                     MealRepository repository) {
         this.repository = repository;
     }

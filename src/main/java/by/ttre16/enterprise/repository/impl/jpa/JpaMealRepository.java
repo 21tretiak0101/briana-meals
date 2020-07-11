@@ -70,9 +70,9 @@ public class JpaMealRepository implements MealRepository {
         Root<Meal> root = query.from(Meal.class);
         query.select(root)
             .where(cb.and(
-                cb.equal(root.get("user").get("id"), userId)),
+                cb.equal(root.get("user").get("id"), userId),
                 cb.greaterThanOrEqualTo(root.get("dateTime"), startDateTime),
-                cb.lessThan(root.get("dateTime"), endDateTime))
+                cb.lessThan(root.get("dateTime"), endDateTime)))
             .orderBy(cb.desc(root.get("dateTime")));
         return entityManager.createQuery(query).getResultList();
     }

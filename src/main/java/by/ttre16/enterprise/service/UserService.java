@@ -3,7 +3,7 @@ package by.ttre16.enterprise.service;
 import by.ttre16.enterprise.annotation.QualifierRepository;
 import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.repository.UserRepository;
-import by.ttre16.enterprise.repository.impl.jpa.JpaUserRepository;
+import by.ttre16.enterprise.repository.impl.datajpa.DataJpaUserRepository;
 import by.ttre16.enterprise.util.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class UserService {
 
     @Autowired
     public UserService(
-            @QualifierRepository(JpaUserRepository.class)
+            @QualifierRepository(DataJpaUserRepository.class)
                     UserRepository repository) {
         this.repository = repository;
     }
