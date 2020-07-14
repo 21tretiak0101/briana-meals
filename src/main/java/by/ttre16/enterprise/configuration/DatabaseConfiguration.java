@@ -3,17 +3,15 @@ package by.ttre16.enterprise.configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.jdbc.datasource.init.DataSourceInitializer;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -21,13 +19,13 @@ import javax.persistence.EntityManagerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.lang.Boolean.parseBoolean;
 import static org.hibernate.cfg.AvailableSettings.*;
 
 @Configuration
-@PropertySource({"classpath:database.properties",
+@PropertySource({"classpath:development/postgresql.properties",
         "classpath:hibernate.properties"})
 @EnableTransactionManagement
+@Import(TestConfiguration.class)
 public class DatabaseConfiguration {
 
     private final Environment environment;
@@ -48,17 +46,6 @@ public class DatabaseConfiguration {
         return dataSource;
     }
 
-    @Bean
-    public DataSourceInitializer dataSourceInitializer() {
-        ResourceDatabasePopulator resourceDatabasePopulator =
-                new ResourceDatabasePopulator();
-        resourceDatabasePopulator.addScript(new ClassPathResource("init.sql"));
-        DataSourceInitializer dataSourceInitializer =
-                new DataSourceInitializer();
-        dataSourceInitializer.setDataSource(dataSource());
-        dataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
-        return dataSourceInitializer;
-    }
 
     @Bean
     public JdbcTemplate jdbcTemplate() {
@@ -71,25 +58,15 @@ public class DatabaseConfiguration {
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+            JpaVendorAdapter jpaVendorAdapter) {
        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean =
                new LocalContainerEntityManagerFactoryBean();
-       entityManagerFactoryBean.setJpaVendorAdapter(jpaVendorAdapter());
+       entityManagerFactoryBean.setJpaVendorAdapter(jpaVendorAdapter);
        entityManagerFactoryBean.setDataSource(dataSource());
        entityManagerFactoryBean.setJpaPropertyMap(jpaPropertyMap());
        entityManagerFactoryBean.setPackagesToScan("by.ttre16.**.model");
        return entityManagerFactoryBean;
-    }
-
-    @Bean
-    public HibernateJpaVendorAdapter jpaVendorAdapter() {
-        HibernateJpaVendorAdapter jpaVendorAdapter =
-                new HibernateJpaVendorAdapter();
-        jpaVendorAdapter.setShowSql(parseBoolean(
-                environment.getProperty("jpa.show_sql")));
-        jpaVendorAdapter.setDatabasePlatform(
-                environment.getProperty("hibernate.dialect"));
-        return jpaVendorAdapter;
     }
 
     @Bean

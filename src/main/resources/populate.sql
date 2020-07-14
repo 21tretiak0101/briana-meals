@@ -12,8 +12,8 @@ INSERT INTO user_roles (user_id, role_id) VALUES
     (2, 9998);
 
 INSERT INTO meals(id, user_id, calories, date_time, description) VALUES
-    (3, 1, 999, '2020-05-13 20:00', 'some meal'),
-    (4, 1, 370, '2020-06-01 10:00', 'morning meal'),
-    (5, 2, 550, '2020-06-01 13:00', 'first meal'),
-    (6, 2, 450, '2020-06-01 14:00', 'evening meal'),
+    (3, 1, 999, '2020-05-13 20:00:00', 'some meal'),
+    (4, 1, 370, '2020-06-01 10:00:00', 'morning meal'),
+    (5, 2, 550, '2020-06-01 13:00:00', 'first meal'),
+    (6, 2, 450, '2020-06-01 14:00:00', 'evening meal'),
     (7, 2, 680, now(), 'night meal');
