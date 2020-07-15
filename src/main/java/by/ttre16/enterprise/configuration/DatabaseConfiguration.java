@@ -8,7 +8,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -16,6 +15,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,31 +25,22 @@ import static org.hibernate.cfg.AvailableSettings.*;
 @PropertySource({"classpath:development/postgresql.properties",
         "classpath:hibernate.properties"})
 @EnableTransactionManagement
-@Import(TestConfiguration.class)
+@Import({DevelopmentConfiguration.class, TestConfiguration.class})
 public class DatabaseConfiguration {
 
     private final Environment environment;
+    private final DataSource dataSource;
 
     @Autowired
-    public DatabaseConfiguration(Environment environment) {
+    public DatabaseConfiguration(Environment environment,
+            DataSource dataSource) {
         this.environment = environment;
+        this.dataSource = dataSource;
     }
-
-    @Bean
-    public DriverManagerDataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(
-                environment.getRequiredProperty("database.driver"));
-        dataSource.setUrl(environment.getProperty("database.url"));
-        dataSource.setUsername(environment.getProperty("database.username"));
-        dataSource.setPassword(environment.getProperty("database.password"));
-        return dataSource;
-    }
-
 
     @Bean
     public JdbcTemplate jdbcTemplate() {
-        return new JdbcTemplate(dataSource());
+        return new JdbcTemplate(dataSource);
     }
 
     @Bean
@@ -63,14 +54,9 @@ public class DatabaseConfiguration {
        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean =
                new LocalContainerEntityManagerFactoryBean();
        entityManagerFactoryBean.setJpaVendorAdapter(jpaVendorAdapter);
-       entityManagerFactoryBean.setDataSource(dataSource());
-       entityManagerFactoryBean.setJpaPropertyMap(jpaPropertyMap());
+       entityManagerFactoryBean.setDataSource(dataSource);
        entityManagerFactoryBean.setPackagesToScan("by.ttre16.**.model");
-       return entityManagerFactoryBean;
-    }
 
-    @Bean
-    public Map<String, String> jpaPropertyMap() {
         Map<String, String> jpaPropertyMap = new HashMap<>();
         jpaPropertyMap.put(FORMAT_SQL,
                 environment.getProperty("hibernate.format_sql"));
@@ -78,14 +64,16 @@ public class DatabaseConfiguration {
                 environment.getProperty("hibernate.use_sql_comments"));
         jpaPropertyMap.put(HBM2DDL_AUTO,
                 environment.getProperty("hibernate.hbm2ddl.auto"));
-        return jpaPropertyMap;
+       entityManagerFactoryBean.setJpaPropertyMap(jpaPropertyMap);
+
+       return entityManagerFactoryBean;
     }
 
     @Bean
     public PlatformTransactionManager transactionManager(
             EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager tm = new JpaTransactionManager();
-        tm.setDataSource(dataSource());
+        tm.setDataSource(dataSource);
         tm.setEntityManagerFactory(entityManagerFactory);
         return tm;
     }

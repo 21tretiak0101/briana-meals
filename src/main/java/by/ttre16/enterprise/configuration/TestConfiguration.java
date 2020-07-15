@@ -14,9 +14,22 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 import static java.lang.Boolean.parseBoolean;
 
+
+/**
+ *
+ * Integration testing specific configuration - creates a in-memory datasource
+ * and inserts some test data on the database.
+ *
+ * This allows to clone the project repository and start a running application
+ * with the command:
+ *
+ * mvn clean install -Dspring.profiles.active=test
+ *
+ */
 @Profile("test")
 @Configuration
-@PropertySource({"classpath:test/hsqldb.properties"})
+@PropertySource({"classpath:test/hsqldb.properties",
+        "classpath:hibernate.properties"})
 public class TestConfiguration {
 
     private final Environment environment;
@@ -42,7 +55,7 @@ public class TestConfiguration {
         ResourceDatabasePopulator resourceDatabasePopulator =
                 new ResourceDatabasePopulator();
         resourceDatabasePopulator.addScript(new ClassPathResource(
-                        environment.getRequiredProperty("init.path")));
+                    environment.getRequiredProperty("init-script.path")));
         DataSourceInitializer dataSourceInitializer =
                 new DataSourceInitializer();
         dataSourceInitializer.setEnabled(parseBoolean(
@@ -57,8 +70,7 @@ public class TestConfiguration {
         HibernateJpaVendorAdapter jpaVendorAdapter =
                 new HibernateJpaVendorAdapter();
         jpaVendorAdapter.setDatabasePlatform(
-                environment.getProperty("database.dialect"));
+                environment.getProperty("hibernate.test.dialect"));
         return jpaVendorAdapter;
     }
-
 }

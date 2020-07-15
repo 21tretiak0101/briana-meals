@@ -64,6 +64,7 @@ public class UserServiceTest extends AbstractServiceTest {
     }
 
     @Test
+    @Transactional(readOnly = true)
     public void getAll() {
         List<User> users = service.getAll();
         users.forEach(u -> log.info("{}\n", u));

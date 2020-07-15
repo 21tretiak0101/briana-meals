@@ -14,9 +14,18 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
 import static java.lang.Boolean.parseBoolean;
 
+/**
+ *
+ * Development specific configuration - creates a localhost postgresql
+ * datasource and inserts some test data on the database.
+ *
+ * Set -Dspring.profiles.active=development to activate this config.
+ *
+ */
 @Configuration
 @Profile("development")
-@PropertySource({"classpath:development/postgresql.properties"})
+@PropertySource({"classpath:development/postgresql.properties",
+        "classpath:hibernate.properties"})
 public class DevelopmentConfiguration {
 
     private final Environment environment;
@@ -44,7 +53,7 @@ public class DevelopmentConfiguration {
         jpaVendorAdapter.setShowSql(parseBoolean(
                 environment.getProperty("jpa.show_sql")));
         jpaVendorAdapter.setDatabasePlatform(
-                environment.getProperty("hibernate.dialect"));
+                environment.getProperty("hibernate.dev.dialect"));
         return jpaVendorAdapter;
     }
 
@@ -52,7 +61,8 @@ public class DevelopmentConfiguration {
     public DataSourceInitializer dataSourceInitializer() {
         ResourceDatabasePopulator resourceDatabasePopulator =
                 new ResourceDatabasePopulator();
-        resourceDatabasePopulator.addScript(new ClassPathResource("init.sql"));
+        resourceDatabasePopulator.addScript(new ClassPathResource(
+                environment.getRequiredProperty("init-script.path")));
         DataSourceInitializer dataSourceInitializer =
                 new DataSourceInitializer();
         dataSourceInitializer.setDataSource(dataSource());
