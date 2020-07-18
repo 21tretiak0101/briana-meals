@@ -3,7 +3,6 @@ package by.ttre16.enterprise.configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,7 +24,6 @@ import static org.hibernate.cfg.AvailableSettings.*;
 @PropertySource({"classpath:development/postgresql.properties",
         "classpath:hibernate.properties"})
 @EnableTransactionManagement
-@Import({DevelopmentConfiguration.class, TestConfiguration.class})
 public class DatabaseConfiguration {
 
     private final Environment environment;

@@ -7,6 +7,8 @@ import by.ttre16.enterprise.repository.impl.datajpa.DataJpaUserRepository;
 import by.ttre16.enterprise.util.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,13 +32,15 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(value = "users", allEntries = true)
     public User create(User user) {
         return repository.save(user);
     }
 
     @Transactional
+    @CacheEvict(value = "users", allEntries = true)
     public void delete(Integer id) {
-        log.warn("Delete user with id: '{}' get.", id);
+        log.info("Delete user with id: '{}' get.", id);
         checkNotFoundWithId(this.repository.deleteById(id), id);
     }
 
@@ -52,6 +56,7 @@ public class UserService {
                 .orElse(null), "email=" + email);
     }
 
+    @Cacheable("users")
     public List<User> getAll() {
         return new ArrayList<>(repository.getAll());
     }
