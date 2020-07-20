@@ -26,8 +26,8 @@
         <appender-ref ref="result"/>
     </logger>
 
-  <!--  <logger name="by.ttre16.enterprise" level="DEBUG"/>
-    <logger name="org.springframework.jdbc" level="DEBUG"/>-->
+    <logger name="by.ttre16.enterprise" level="DEBUG"/>
+    <logger name="org.springframework.jdbc" level="DEBUG"/>
 
     <root level="WARN">
         <appender-ref ref="CONSOLE" />
