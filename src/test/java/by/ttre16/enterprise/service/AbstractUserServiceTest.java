@@ -1,24 +1,39 @@
 package by.ttre16.enterprise.service;
 
+import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.model.User;
+import by.ttre16.enterprise.service.util.MealTestData;
 import by.ttre16.enterprise.util.exception.NotFoundException;
-import org.junit.Test;
+
+import org.junit.*;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 
+import static by.ttre16.enterprise.service.util.MealTestData.MEALS;
 import static by.ttre16.enterprise.service.util.UserTestData.*;
+import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.assertThrows;
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class UserServiceTest extends AbstractServiceTest {
-    private static final Logger log = getLogger(UserServiceTest.class);
+public abstract class AbstractUserServiceTest extends AbstractServiceTest {
+    private static final Logger log = getLogger("result");
 
     @Autowired
     private UserService service;
+
+    @Autowired
+    private CacheManager cacheManager;
+
+    @Before
+    public void setUp() {
+        requireNonNull(cacheManager.getCache("users")).clear();
+    }
 
     @Test
     public void create() {
@@ -47,12 +62,11 @@ public class UserServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    @Transactional
+    @Transactional(readOnly = true)
     public void get() {
         Integer uid = ADMIN_ID;
         User user = service.get(uid);
         log.info("get one user: {}", user);
-        user.getRoles().forEach(System.out::println);
         assertMatch(USERS.get(uid), user);
     }
 
@@ -92,5 +106,20 @@ public class UserServiceTest extends AbstractServiceTest {
     public void deleteNotFound() {
         assertThrows(NotFoundException.class,
                 () -> service.delete(NOT_FOUND_ID));
+    }
+
+    @Test
+    @Transactional(readOnly = true)
+    public void getWithMeals() {
+        Collection<Meal> expectedMeals = MEALS.get(USER_ID).values();
+        User user = service.getWithMeals(USER_ID);
+        log.info("{}", user);
+        MealTestData.assertMatch(expectedMeals, user.getMeals());
+    }
+
+    @Test
+    public void getWithMealsNotFound() {
+        assertThrows(NotFoundException.class,
+                () -> service.getWithMeals(NOT_FOUND_ID));
     }
 }

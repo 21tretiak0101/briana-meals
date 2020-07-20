@@ -7,6 +7,7 @@ import java.util.*;
 
 import static by.ttre16.enterprise.util.RoleUtil.getRoleAdmin;
 import static by.ttre16.enterprise.util.RoleUtil.getRoleUser;
+import static java.util.Collections.emptyList;
 
 public class UserTestData extends TestData {
     public static final Map<Integer, User> USERS = new HashMap<>();
@@ -24,7 +25,8 @@ public class UserTestData extends TestData {
 
     public static User getNew() {
         return new User(null, "New", "new@gmail.com", "newPass", false,
-                new Date(), Collections.singletonList(ROLE_USER), 1230);
+                new Date(), Collections.singletonList(ROLE_USER),
+                1230, emptyList());
     }
 
     public static User getUpdated(Integer id) {
@@ -35,12 +37,14 @@ public class UserTestData extends TestData {
     }
 
     public static void assertMatch(User expected, User actual) {
-        AssertUtil.assertMatch(expected, actual, "roles", "registered");
+        AssertUtil.assertMatch(expected, actual,
+                "roles", "registered", "meals");
     }
 
     public static void assertMatch(Iterable<User> expected,
             Iterable<User> actual) {
-        AssertUtil.assertMatch(expected, actual, "registered", "roles");
+        AssertUtil.assertMatch(expected, actual,
+                "registered", "roles", "meals");
     }
 }
 
