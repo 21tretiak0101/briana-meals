@@ -1,5 +1,6 @@
 package by.ttre16.enterprise.configuration;
 
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,23 +8,15 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
+import static by.ttre16.enterprise.util.ProfileUtil.DEVELOPMENT;
 import static java.lang.Boolean.parseBoolean;
 
-/**
- *
- * Development specific configuration - creates a localhost postgresql
- * datasource and inserts some test data on the database.
- *
- * Set -Dspring.profiles.active=development to activate this config.
- *
- */
+@Profile(DEVELOPMENT)
 @Configuration
-@Profile("development")
 @PropertySource({"classpath:development/postgresql.properties",
         "classpath:hibernate.properties"})
 public class DevelopmentConfiguration {
@@ -36,8 +29,8 @@ public class DevelopmentConfiguration {
     }
 
     @Bean
-    public DriverManagerDataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+    public DataSource dataSource() {
+        DataSource dataSource = new DataSource();
         dataSource.setDriverClassName(
                 environment.getRequiredProperty("database.driver"));
         dataSource.setUrl(environment.getProperty("database.url"));

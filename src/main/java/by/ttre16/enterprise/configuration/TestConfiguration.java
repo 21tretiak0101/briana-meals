@@ -12,21 +12,10 @@ import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
+import static by.ttre16.enterprise.util.ProfileUtil.TEST;
 import static java.lang.Boolean.parseBoolean;
 
-
-/**
- *
- * Integration testing specific configuration - creates a in-memory datasource
- * and inserts some test data on the database.
- *
- * This allows to clone the project repository and start a running application
- * with the command:
- *
- * mvn clean install -Dspring.profiles.active=test
- *
- */
-@Profile("test")
+@Profile(TEST)
 @Configuration
 @PropertySource({"classpath:test/hsqldb.properties",
         "classpath:hibernate.properties"})
@@ -69,6 +58,8 @@ public class TestConfiguration {
     public HibernateJpaVendorAdapter jpaVendorAdapter() {
         HibernateJpaVendorAdapter jpaVendorAdapter =
                 new HibernateJpaVendorAdapter();
+        jpaVendorAdapter.setShowSql(parseBoolean(
+                environment.getProperty("jpa.show_sql")));
         jpaVendorAdapter.setDatabasePlatform(
                 environment.getProperty("hibernate.test.dialect"));
         return jpaVendorAdapter;
