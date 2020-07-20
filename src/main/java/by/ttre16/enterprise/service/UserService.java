@@ -1,9 +1,7 @@
 package by.ttre16.enterprise.service;
 
-import by.ttre16.enterprise.annotation.QualifierRepository;
 import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.repository.UserRepository;
-import by.ttre16.enterprise.repository.impl.datajpa.DataJpaUserRepository;
 import by.ttre16.enterprise.util.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +23,7 @@ public class UserService {
     private static final Logger log = getLogger(UserService.class);
 
     @Autowired
-    public UserService(
-            @QualifierRepository(DataJpaUserRepository.class)
-                    UserRepository repository) {
+    public UserService(UserRepository repository) {
         this.repository = repository;
     }
 
@@ -50,6 +46,7 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("User not Found"));
     }
 
+    @Transactional(readOnly = true)
     public User getByEmail(String email) {
         return checkNotFound(repository
                 .getByEmail(email)
@@ -64,5 +61,11 @@ public class UserService {
     @Transactional
     public void update(User user) {
         checkNotFoundWithId(repository.save(user), user.getId());
+    }
+
+    @Transactional
+    public User getWithMeals(Integer id) {
+        return checkNotFound(repository.getWithMeals(id).orElse(null),
+                "id=" + id);
     }
 }

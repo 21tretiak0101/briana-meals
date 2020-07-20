@@ -1,9 +1,7 @@
 package by.ttre16.enterprise.service;
 
-import by.ttre16.enterprise.annotation.QualifierRepository;
 import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.repository.MealRepository;
-import by.ttre16.enterprise.repository.impl.datajpa.DataJpaMealRepository;
 import by.ttre16.enterprise.repository.impl.inmemory.InMemoryMealRepository;
 import by.ttre16.enterprise.util.exception.NotFoundException;
 import org.slf4j.Logger;
@@ -18,7 +16,9 @@ import java.util.List;
 
 import static by.ttre16.enterprise.util.DateTimeUtil.atStartOfDayOrMin;
 import static by.ttre16.enterprise.util.DateTimeUtil.atEndOfDayOrMax;
+import static by.ttre16.enterprise.util.ValidationUtil.checkNotFound;
 import static by.ttre16.enterprise.util.ValidationUtil.checkNotFoundWithId;
+import static java.lang.String.format;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -27,9 +27,7 @@ public class MealService {
     private static final Logger log = getLogger(MealService.class);
 
     @Autowired
-    public MealService(
-            @QualifierRepository(DataJpaMealRepository.class)
-                    MealRepository repository) {
+    public MealService(MealRepository repository) {
         this.repository = repository;
     }
 
@@ -44,7 +42,7 @@ public class MealService {
     @Transactional
     public Meal save(Integer userId, Meal meal) {
         Meal savedMeal = this.repository.save(userId, meal);
-        log.warn("Save meal with id: '{}'.", meal.getId());
+        log.info("Save meal with id: '{}'.", meal.getId());
         return savedMeal;
     }
 
@@ -71,5 +69,11 @@ public class MealService {
     public void update(Meal meal, int userId) {
         log.info("Update meal with id: '{}'.", meal.getId());
         checkNotFoundWithId(repository.save(userId, meal), meal.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public Meal getWithUser(Integer userId, Integer id) {
+        return checkNotFound(repository.getWithUser(userId, id)
+                .orElse(null), format("userId=%s, id=%s", userId, id));
     }
 }
