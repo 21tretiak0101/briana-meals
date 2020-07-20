@@ -2,9 +2,9 @@ package by.ttre16.enterprise.repository.impl.datajpa;
 
 import by.ttre16.enterprise.annotation.QualifierRepository;
 import by.ttre16.enterprise.model.Meal;
-import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.repository.MealRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +12,10 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
+import static by.ttre16.enterprise.util.ProfileUtil.DATA_JPA;
+
 @Repository
+@Profile(DATA_JPA)
 @QualifierRepository(DataJpaMealRepository.class)
 public class  DataJpaMealRepository implements MealRepository {
     private final CrudMealRepository crudMealRepository;
@@ -33,8 +36,10 @@ public class  DataJpaMealRepository implements MealRepository {
 
     @Override
     public Meal save(Integer userId, Meal meal) {
-        User user = crudUserRepository.getOne(userId);
-        meal.setUser(user);
+        if (!meal.isNew() && !getOne(userId, meal.getId()).isPresent()) {
+            return null;
+        }
+        meal.setUser(crudUserRepository.getOne(userId));
         return crudMealRepository.save(meal);
     }
 
@@ -63,5 +68,10 @@ public class  DataJpaMealRepository implements MealRepository {
                 cb.greaterThanOrEqualTo(root.get("dateTime"), startDateTime),
                 cb.lessThan(root.get("dateTime"), endDateTime)),
                 Sort.by("dateTime").descending());
+    }
+
+    @Override
+    public Optional<Meal> getWithUser(Integer userId, Integer id) {
+        return crudMealRepository.getWithUser(userId, id);
     }
 }

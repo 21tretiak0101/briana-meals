@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface CrudMealRepository extends JpaRepository<Meal, Integer>,
         JpaSpecificationExecutor<Meal> {
 
@@ -17,4 +19,9 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer>,
     @Modifying
     @Query("delete from Meal m where m.user.id=:userId")
     int deleteAll(@Param("userId") Integer userId);
+
+    @Query("select m from Meal m left join fetch User u on m.user.id = u.id" +
+            " where u.id = ?1 and m.id = ?2")
+    Optional<Meal> getWithUser(Integer userId, Integer id);
+
 }

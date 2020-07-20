@@ -1,16 +1,18 @@
 package by.ttre16.enterprise.repository.impl.datajpa;
 
-import by.ttre16.enterprise.annotation.QualifierRepository;
 import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.Optional;
 
+import static by.ttre16.enterprise.util.ProfileUtil.DATA_JPA;
+
 @Repository
-@QualifierRepository(DataJpaUserRepository.class)
+@Profile(DATA_JPA)
 public class DataJpaUserRepository implements UserRepository {
     private final CrudUserRepository crudUserRepository;
 
@@ -42,5 +44,10 @@ public class DataJpaUserRepository implements UserRepository {
     @Override
     public boolean deleteById(Integer id) {
         return crudUserRepository.delete(id) == 1;
+    }
+
+    @Override
+    public Optional<User> getWithMeals(Integer id) {
+        return crudUserRepository.getWithMeals(id);
     }
 }
