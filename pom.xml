@@ -28,7 +28,7 @@
         <hibernate.version>5.4.10.Final</hibernate.version>
         <hibernate-validator.version>6.1.5.Final</hibernate-validator.version>
         <postgresql.version>42.2.12</postgresql.version>
-        <hsqldb.version>2.4.1</hsqldb.version>
+        <hsqldb.version>2.5.1</hsqldb.version>
         <ehcache.version>3.8.1</ehcache.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -120,7 +120,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.annotation</groupId>
@@ -177,5 +176,16 @@
         </dependency>
     </dependencies>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>${spring.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>
