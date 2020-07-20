@@ -4,6 +4,7 @@ import by.ttre16.enterprise.annotation.QualifierRepository;
 import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.repository.MealRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,9 +13,11 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
+import static by.ttre16.enterprise.util.ProfileUtil.JPA;
 import static java.util.Optional.*;
 
 @Repository
+@Profile(JPA)
 @QualifierRepository(JpaMealRepository.class)
 public class JpaMealRepository implements MealRepository {
 
@@ -63,17 +66,31 @@ public class JpaMealRepository implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> getBetweenHalfOpen(LocalDateTime startDateTime,
-            LocalDateTime endDateTime, Integer userId) {
+    public Optional<Meal> getWithUser(Integer userId, Integer id) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Meal> query = cb.createQuery(Meal.class);
-        Root<Meal> root = query.from(Meal.class);
-        query.select(root)
+        Root<Meal> meal = query.from(Meal.class);
+        meal.fetch("user");
+        query.select(meal)
+                .where(cb.and(
+                        cb.equal(meal.get("user").get("id"), userId),
+                        cb.equal(meal.get("id"), id)
+                ));
+        return entityManager.createQuery(query).getResultStream().findFirst();
+    }
+
+    @Override
+    public Collection<Meal> getBetweenHalfOpen(LocalDateTime startDateTime,
+     LocalDateTime endDateTime, Integer userId) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Meal> query = cb.createQuery(Meal.class);
+        Root<Meal> meal = query.from(Meal.class);
+        query.select(meal)
             .where(cb.and(
-                cb.equal(root.get("user").get("id"), userId),
-                cb.greaterThanOrEqualTo(root.get("dateTime"), startDateTime),
-                cb.lessThan(root.get("dateTime"), endDateTime)))
-            .orderBy(cb.desc(root.get("dateTime")));
+                cb.equal(meal.get("user").get("id"), userId),
+                cb.greaterThanOrEqualTo(meal.get("dateTime"), startDateTime),
+        cb.lessThan(meal.get("dateTime"), endDateTime)))
+            .orderBy(cb.desc(meal.get("dateTime")));
         return entityManager.createQuery(query).getResultList();
     }
 }

@@ -3,7 +3,7 @@ package by.ttre16.enterprise.repository.impl.jdbc;
 import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -12,12 +12,12 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.dao.support.DataAccessUtils.singleResult;
+import static by.ttre16.enterprise.util.ProfileUtil.JDBC;
 
 @Repository
+@Profile(JDBC)
 public class JdbcUserRepository implements UserRepository {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -37,9 +37,10 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public Optional<User> getByEmail(String email) {
-        List<User> user = jdbcTemplate.query(
-                "SELECT * FROM users WHERE email = ?", ROW_MAPPER, email);
-        return Optional.ofNullable(singleResult(user));
+        return jdbcTemplate.query(
+                        "SELECT * FROM users" +
+                        " WHERE email = ?", ROW_MAPPER, email).stream()
+                .findFirst();
     }
 
     @Override
@@ -68,9 +69,9 @@ public class JdbcUserRepository implements UserRepository {
 
     @Override
     public Optional<User> get(Integer id) {
-        List<User> user = jdbcTemplate.query(
-                "SELECT * FROM users WHERE id = ?", ROW_MAPPER, id);
-        return Optional.ofNullable(singleResult(user));
+        return jdbcTemplate.query(
+                "SELECT * FROM users WHERE id = ?", ROW_MAPPER, id).stream()
+        .findFirst();
     }
 
     @Override

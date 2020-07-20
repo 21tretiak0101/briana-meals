@@ -4,6 +4,7 @@ import by.ttre16.enterprise.annotation.QualifierRepository;
 import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.repository.MealRepository;
 import by.ttre16.enterprise.util.DateTimeUtil;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -12,10 +13,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static by.ttre16.enterprise.util.ProfileUtil.IN_MEMORY;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Repository
+@Profile(IN_MEMORY)
 @QualifierRepository(InMemoryMealRepository.class)
 public class InMemoryMealRepository implements MealRepository {
     private final Map<Integer, InMemoryBaseRepository<Meal>> userMeals =

@@ -5,6 +5,7 @@ import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.repository.MealRepository;
 import by.ttre16.enterprise.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -12,7 +13,10 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static by.ttre16.enterprise.util.ProfileUtil.IN_MEMORY;
+
 @Repository
+@Profile(IN_MEMORY)
 public class InMemoryUserRepository extends InMemoryBaseRepository<User>
         implements UserRepository {
 

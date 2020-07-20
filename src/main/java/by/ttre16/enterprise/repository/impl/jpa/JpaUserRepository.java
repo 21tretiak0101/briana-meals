@@ -3,17 +3,23 @@ package by.ttre16.enterprise.repository.impl.jpa;
 import by.ttre16.enterprise.annotation.QualifierRepository;
 import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.repository.UserRepository;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import static by.ttre16.enterprise.util.ProfileUtil.JPA;
 import static java.util.Optional.ofNullable;
 import static org.springframework.dao.support.DataAccessUtils.singleResult;
 
 @Repository
+@Profile(JPA)
 @QualifierRepository(JpaUserRepository.class)
 public class JpaUserRepository implements UserRepository {
     @PersistenceContext
@@ -53,5 +59,15 @@ public class JpaUserRepository implements UserRepository {
         return entityManager.createNamedQuery(User.DELETE)
                 .setParameter("id", id)
                 .executeUpdate() == 1;
+    }
+
+    @Override
+    public Optional<User> getWithMeals(Integer id) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> query = cb.createQuery(User.class);
+        Root<User> user = query.from(User.class);
+        user.fetch("meals");
+        query.select(user).where(cb.equal(user.get("id"), id));
+        return entityManager.createQuery(query).getResultStream().findFirst();
     }
 }

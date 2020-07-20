@@ -3,6 +3,7 @@ package by.ttre16.enterprise.repository.impl.jdbc;
 import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.repository.MealRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,9 +16,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import static by.ttre16.enterprise.util.ProfileUtil.JDBC;
 import static org.springframework.dao.support.DataAccessUtils.singleResult;
 
 @Repository
+@Profile(JDBC)
 public class JdbcMealRepository implements MealRepository {
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;

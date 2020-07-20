@@ -17,6 +17,10 @@ public interface MealRepository extends AppRepository {
 
      boolean deleteAll(Integer userId);
 
+     default Optional<Meal> getWithUser(Integer userId, Integer id) {
+          throw new UnsupportedOperationException();
+     }
+
      Collection<Meal> getBetweenHalfOpen(LocalDateTime startDateTime,
                LocalDateTime endDateTime, Integer userId);
 }
