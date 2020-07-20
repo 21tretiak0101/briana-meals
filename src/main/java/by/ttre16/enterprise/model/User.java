@@ -1,15 +1,18 @@
 package by.ttre16.enterprise.model;
 
+import org.hibernate.annotations.BatchSize;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.Date;
 import java.util.List;
 
 import static by.ttre16.enterprise.util.MealUtil.DEFAULT_CALORIES_PER_DAY;
+import static java.util.Collections.emptyList;
 
 @NamedQueries({
     @NamedQuery(name = User.GET_ALL,
-            query = "select distinct u from User u join fetch u.roles "),
+            query = "select distinct u from User u join fetch u.roles"),
     @NamedQuery(name = User.GET_BY_EMAIL,
         query = "select u from User u " +
                 "where u.email=:email "),
@@ -41,25 +44,30 @@ public class User extends AbstractNamedEntity {
     @Column(name = "registered", columnDefinition = "timestamp default now()")
     private Date registered = new Date();
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.REMOVE, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,
+            CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @BatchSize(size = 200)
     private List<Role> roles;
 
     @Column(name = "calories_per_day")
     private Integer caloriesPerDay = DEFAULT_CALORIES_PER_DAY;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OrderBy("dateTime DESC")
+    private List<Meal> meals;
+
     public User(Integer id, String name, String email, String password,
                 boolean enabled, List<Role> roles) {
         this(id, name, email, password, enabled, new Date(), roles,
-                DEFAULT_CALORIES_PER_DAY);
+                DEFAULT_CALORIES_PER_DAY, emptyList());
     }
 
     public User(Integer id, String name, String email, String password,
                 boolean enabled, Date registered, List<Role> roles,
-                Integer caloriesPerDay) {
+                Integer caloriesPerDay, List<Meal> meals) {
         super(id, name);
         this.email = email;
         this.password = password;
@@ -67,11 +75,12 @@ public class User extends AbstractNamedEntity {
         this.registered = registered;
         this.roles = roles;
         this.caloriesPerDay = caloriesPerDay;
+        this.meals = meals;
     }
 
     public User(User user) {
         this(user.id, user.name, user.email, user.password, user.enabled,
-                 user.registered ,user.roles, user.caloriesPerDay);
+                 user.registered ,user.roles, user.caloriesPerDay, user.meals);
     }
 
     public User(Integer id) {
@@ -88,6 +97,10 @@ public class User extends AbstractNamedEntity {
         this.caloriesPerDay = caloriesPerDay;
     }
 
+    public void setMeals(List<Meal> meals) {
+        this.meals = meals;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -102,6 +115,10 @@ public class User extends AbstractNamedEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Meal> getMeals() {
+        return meals;
     }
 
     public boolean isEnabled() {

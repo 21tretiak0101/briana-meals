@@ -15,4 +15,8 @@ public interface UserRepository extends AppRepository {
     Optional<User> get(Integer id);
 
     boolean deleteById(Integer id);
+
+    default Optional<User> getWithMeals(Integer id) {
+        throw new UnsupportedOperationException();
+    }
 }

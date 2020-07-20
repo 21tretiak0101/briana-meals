@@ -21,19 +21,23 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static by.ttre16.enterprise.util.ActionType.*;
+import static by.ttre16.enterprise.util.ProfileUtil.DATA_JPA;
+import static by.ttre16.enterprise.util.ProfileUtil.DEVELOPMENT;
 import static by.ttre16.enterprise.util.ServletUtil.getParameter;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
     private MealRestController controller;
     private static final Logger log = getLogger(MealServlet.class);
-    private ConfigurableApplicationContext context;
+    private AnnotationConfigApplicationContext context;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        context = new AnnotationConfigApplicationContext(
-                ApplicationConfiguration.class);
+        context = new AnnotationConfigApplicationContext();
+        context.getEnvironment().setActiveProfiles(DEVELOPMENT, DATA_JPA);
+        context.register(ApplicationConfiguration.class);
+        context.refresh();
         controller = context.getBean(MealRestController.class);
     }
 

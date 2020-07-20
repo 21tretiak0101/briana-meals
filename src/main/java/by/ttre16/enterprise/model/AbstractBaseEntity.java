@@ -7,7 +7,7 @@ import java.util.Objects;
 public abstract class AbstractBaseEntity {
     @Id
     @SequenceGenerator(name = "sequence", sequenceName = "global_seq",
-            initialValue = 100000, allocationSize = 1)
+            initialValue = 10000, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "sequence")
     protected Integer id;

@@ -1,20 +1,19 @@
 package by.ttre16.enterprise.service;
 
 import by.ttre16.enterprise.model.Meal;
-import by.ttre16.enterprise.util.exception.NotFoundException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 
 import java.util.List;
 
+import static by.ttre16.enterprise.service.util.AssertUtil.assertThrowsNotFoundException;
 import static by.ttre16.enterprise.service.util.MealTestData.*;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.*;
 
-public class MealServiceTest extends AbstractServiceTest {
-
+public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     @Autowired
     private MealService service;
 
@@ -53,19 +52,18 @@ public class MealServiceTest extends AbstractServiceTest {
     @Test
     public void delete() {
         service.delete(USER_ID, MEAL3_ID);
-        assertThrows(NotFoundException.class,
-                () -> service.getOne(USER_ID, MEAL3_ID));
+        assertThrowsNotFoundException(() -> service.getOne(USER_ID, MEAL3_ID));
     }
 
     @Test
     public void deleteWhereUserNotFound() {
-        assertThrows(NotFoundException.class,
+        assertThrowsNotFoundException(
                 () -> service.delete(NOT_FOUND_ID, MEAL3_ID));
     }
 
     @Test
     public void deleteWhereMealNotFound() {
-        assertThrows(NotFoundException.class,
+        assertThrowsNotFoundException(
                 () -> service.delete(ADMIN_ID, NOT_FOUND_ID));
     }
 
@@ -77,13 +75,13 @@ public class MealServiceTest extends AbstractServiceTest {
 
     @Test
     public void getOneWhereMealNotFound() {
-        assertThrows(NotFoundException.class,
+        assertThrowsNotFoundException(
                 () -> service.getOne(USER_ID, NOT_FOUND_ID));
     }
 
     @Test
     public void getOneWhereUserNotFound() {
-        assertThrows(NotFoundException.class,
+        assertThrowsNotFoundException(
                 () -> service.getOne(NOT_FOUND_ID, MEAL3_ID));
     }
 
@@ -99,7 +97,6 @@ public class MealServiceTest extends AbstractServiceTest {
         List<Meal> userMeals = service.getBetweenInclusive(MEAL3_DATE_TIME,
                 MEAL4_DATE_TIME, USER_ID);
         Meal expected = MEALS.get(USER_ID).get(MEAL3_ID);
-        System.out.println(userMeals);
         assertMatch(singletonList(expected), userMeals);
     }
 
@@ -116,5 +113,19 @@ public class MealServiceTest extends AbstractServiceTest {
         service.update(updatedMeal, ADMIN_ID);
         assertMatch(getUpdated(ADMIN_ID, MEAL6_ID),
                 service.getOne(ADMIN_ID, MEAL6_ID));
+    }
+
+    @Test
+    public void getWithUser() {
+         Meal userMeal = MEALS.get(USER_ID).get(MEAL3_ID);
+         Meal adminMeal = MEALS.get(ADMIN_ID).get(MEAL5_ID);
+         assertMatch(userMeal, service.getWithUser(USER_ID, MEAL3_ID));
+         assertMatch(adminMeal, service.getWithUser(ADMIN_ID, MEAL5_ID));
+    }
+
+    @Test
+    public void getWithUserNotFound() {
+        assertThrowsNotFoundException(
+                () -> service.getWithUser(NOT_FOUND_ID, MEAL3_ID));
     }
 }
