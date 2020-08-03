@@ -9,9 +9,13 @@ import java.util.List;
 
 import static by.ttre16.enterprise.service.util.AssertUtil.assertThrowsNotFoundException;
 import static by.ttre16.enterprise.service.util.MealTestData.*;
+import static by.ttre16.enterprise.service.util.TestData.ADMIN_ID;
+import static by.ttre16.enterprise.service.util.TestData.NOT_FOUND_ID;
+import static by.ttre16.enterprise.service.util.TestData.USER_ID;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     @Autowired
@@ -117,10 +121,10 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Test
     public void getWithUser() {
-         Meal userMeal = MEALS.get(USER_ID).get(MEAL3_ID);
-         Meal adminMeal = MEALS.get(ADMIN_ID).get(MEAL5_ID);
-         assertMatch(userMeal, service.getWithUser(USER_ID, MEAL3_ID));
-         assertMatch(adminMeal, service.getWithUser(ADMIN_ID, MEAL5_ID));
+        Meal userMeal = MEALS.get(USER_ID).get(MEAL3_ID);
+        Meal adminMeal = MEALS.get(ADMIN_ID).get(MEAL5_ID);
+        assertMatch(userMeal, service.getWithUser(USER_ID, MEAL3_ID));
+        assertMatch(adminMeal, service.getWithUser(ADMIN_ID, MEAL5_ID));
     }
 
     @Test
