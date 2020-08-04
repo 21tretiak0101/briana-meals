@@ -37,14 +37,12 @@ public class UserTestData extends TestData {
     }
 
     public static void assertMatch(User expected, User actual) {
-        AssertUtil.assertMatch(expected, actual,
-                "roles", "registered", "meals");
+        AssertUtil.assertMatch(expected, actual, "registered", "meals");
     }
 
     public static void assertMatch(Iterable<User> expected,
             Iterable<User> actual) {
-        AssertUtil.assertMatch(expected, actual,
-                "registered", "roles", "meals");
+        AssertUtil.assertMatch(expected, actual, "registered", "meals");
     }
 }
 

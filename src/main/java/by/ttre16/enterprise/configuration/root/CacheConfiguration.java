@@ -1,4 +1,4 @@
-package by.ttre16.enterprise.configuration;
+package by.ttre16.enterprise.configuration.root;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -13,7 +13,6 @@ import java.io.IOException;
 @Configuration
 @EnableCaching
 public class CacheConfiguration {
-
     @Bean
     public CacheManager cacheManager() throws IOException {
         JCacheCacheManager jCacheCacheManager = new JCacheCacheManager();

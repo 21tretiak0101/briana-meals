@@ -116,21 +116,4 @@ public class Meal extends AbstractBaseEntity {
                 ", id=" + id +
                 '}';
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Meal meal = (Meal) o;
-        return calories.equals(meal.calories) &&
-                dateTime.equals(meal.dateTime) &&
-                description.equals(meal.description) &&
-                user.getId().equals(meal.user.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return hash(super.hashCode(), calories, dateTime, description, user.id);
-    }
 }

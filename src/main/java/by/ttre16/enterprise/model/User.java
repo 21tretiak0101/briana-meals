@@ -1,6 +1,8 @@
 package by.ttre16.enterprise.model;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -10,6 +12,7 @@ import java.util.List;
 import static by.ttre16.enterprise.util.MealUtil.DEFAULT_CALORIES_PER_DAY;
 import static java.util.Collections.emptyList;
 
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @NamedQueries({
     @NamedQuery(name = User.GET_ALL,
             query = "select distinct u from User u join fetch u.roles"),
@@ -44,12 +47,13 @@ public class User extends AbstractNamedEntity {
     @Column(name = "registered", columnDefinition = "timestamp default now()")
     private Date registered = new Date();
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH,
             CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     @BatchSize(size = 200)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private List<Role> roles;
 
     @Column(name = "calories_per_day")

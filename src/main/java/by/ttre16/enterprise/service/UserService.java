@@ -18,6 +18,7 @@ import static by.ttre16.enterprise.util.ValidationUtil.checkNotFoundWithId;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
+@Transactional
 public class UserService {
     private final UserRepository repository;
     private static final Logger log = getLogger(UserService.class);
@@ -27,19 +28,18 @@ public class UserService {
         this.repository = repository;
     }
 
-    @Transactional
     @CacheEvict(value = "users", allEntries = true)
     public User create(User user) {
         return repository.save(user);
     }
 
-    @Transactional
     @CacheEvict(value = "users", allEntries = true)
     public void delete(Integer id) {
         log.info("Delete user with id: '{}' get.", id);
         checkNotFoundWithId(this.repository.deleteById(id), id);
     }
 
+    @Transactional(readOnly = true)
     public User get(Integer id) {
         log.info("Get user with id: '{}'.", id);
         return repository.get(id)
@@ -54,16 +54,16 @@ public class UserService {
     }
 
     @Cacheable("users")
+    @Transactional(readOnly = true)
     public List<User> getAll() {
         return new ArrayList<>(repository.getAll());
     }
 
-    @Transactional
     public void update(User user) {
         checkNotFoundWithId(repository.save(user), user.getId());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public User getWithMeals(Integer id) {
         return checkNotFound(repository.getWithMeals(id).orElse(null),
                 "id=" + id);

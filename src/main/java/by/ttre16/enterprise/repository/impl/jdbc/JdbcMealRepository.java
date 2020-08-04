@@ -27,15 +27,18 @@ public class JdbcMealRepository implements MealRepository {
     private final SimpleJdbcInsert simpleJdbcInsert;
     private static final BeanPropertyRowMapper<Meal> ROW_MAPPER =
             BeanPropertyRowMapper.newInstance(Meal.class);
+    private final JdbcUserRepository userRepository;
 
     @Autowired
     public JdbcMealRepository(JdbcTemplate jdbcTemplate,
-            NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+            NamedParameterJdbcTemplate namedParameterJdbcTemplate,
+            JdbcUserRepository userRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("meals")
                 .usingGeneratedKeyColumns("id");
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -88,10 +91,18 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public Collection<Meal> getBetweenHalfOpen(LocalDateTime startDateTime,
-                                               LocalDateTime endDateTime, Integer userId) {
+            LocalDateTime endDateTime, Integer userId) {
         return jdbcTemplate.query(
                 "SELECT * FROM meals WHERE user_id = ? " +
                 "AND date_time >= ? AND date_time < ? ORDER BY date_time DESC",
                 ROW_MAPPER, userId, startDateTime, endDateTime);
+    }
+
+    @Override
+    public Optional<Meal> getWithUser(Integer userId, Integer id) {
+        return getOne(userId, id).flatMap(meal -> {
+            meal.setUser(userRepository.get(userId).orElse(null));
+            return Optional.of(meal);
+        });
     }
 }

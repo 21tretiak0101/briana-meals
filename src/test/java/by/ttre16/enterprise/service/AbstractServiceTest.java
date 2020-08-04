@@ -1,6 +1,6 @@
 package by.ttre16.enterprise.service;
 
-import by.ttre16.enterprise.configuration.ApplicationConfiguration;
+import by.ttre16.enterprise.configuration.root.RootContextConfiguration;
 import by.ttre16.enterprise.service.util.TimingRules;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static by.ttre16.enterprise.util.ProfileUtil.*;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {ApplicationConfiguration.class})
+@ContextConfiguration(classes = {RootContextConfiguration.class})
 @Sql(value = "classpath:populate.sql",
     config = @SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED))
 @ActiveProfiles(TEST)

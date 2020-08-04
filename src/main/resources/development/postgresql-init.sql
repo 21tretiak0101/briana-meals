@@ -18,13 +18,6 @@ CREATE TABLE users (
 
 CREATE UNIQUE INDEX users_unique_email_idx ON users (email);
 
-CREATE TABLE user_roles (
-    user_id INTEGER NOT NULL,
-    role    VARCHAR(255),
-    CONSTRAINT user_roles_idx UNIQUE (user_id, role),
-    FOREIGN KEY (user_id) REFERENCES USERS (id) ON DELETE CASCADE
-);
-
 CREATE TABLE roles (
     id   INTEGER NOT NULL PRIMARY KEY DEFAULT nextval('global_seq'),
     name VARCHAR(100) NOT NULL

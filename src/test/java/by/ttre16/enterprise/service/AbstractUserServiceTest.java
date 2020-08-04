@@ -67,6 +67,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         Integer uid = ADMIN_ID;
         User user = service.get(uid);
         log.info("get one user: {}", user);
+        log.info("user roles: {}", user.getRoles());
         assertMatch(USERS.get(uid), user);
     }
 

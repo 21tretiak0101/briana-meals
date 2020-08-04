@@ -8,14 +8,4 @@ import org.springframework.test.context.ActiveProfiles;
 import static by.ttre16.enterprise.util.ProfileUtil.JDBC;
 
 @ActiveProfiles(JDBC)
-public class JdbcUserServiceTest extends AbstractUserServiceTest {
-    @Ignore
-    @Test
-    @Override
-    public void getWithMeals() { }
-
-    @Ignore
-    @Test
-    @Override
-    public void getWithMealsNotFound() { }
-}
+public class JdbcUserServiceTest extends AbstractUserServiceTest { }
