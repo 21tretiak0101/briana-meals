@@ -25,9 +25,10 @@ CREATE TABLE roles (
 
 CREATE TABLE user_roles (
     user_id INTEGER NOT NULL,
-    role_id    VARCHAR(255),
-    CONSTRAINT user_roles_idx UNIQUE (user_id, role_id),
-    FOREIGN KEY (user_id) REFERENCES USERS (id) ON DELETE CASCADE
+    role_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (role_id) REFERENCES roles (id),
+    CONSTRAINT user_roles_idx UNIQUE (user_id, role_id)
 );
 
 CREATE TABLE meals (
