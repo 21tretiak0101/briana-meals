@@ -1,16 +1,23 @@
-package by.ttre16.enterprise.configuration;
+package by.ttre16.enterprise.configuration.root;
 
+import by.ttre16.enterprise.annotation.ProfileProperties;
 import org.hibernate.cache.jcache.ConfigSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.init.DataSourceInitializer;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -18,23 +25,28 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
+import static by.ttre16.enterprise.util.ProfilePropertiesUtil.*;
+import static by.ttre16.enterprise.util.ProfileUtil.*;
+import static java.lang.Boolean.parseBoolean;
 import static org.hibernate.cfg.AvailableSettings.*;
 
 @Configuration
-@PropertySource({"classpath:development/postgresql.properties",
-        "classpath:hibernate.properties"})
+@PropertySource({"classpath:hibernate.properties"})
 @EnableTransactionManagement
 public class DatabaseConfiguration {
 
     private final Environment environment;
     private final DataSource dataSource;
+    private final Properties properties;
 
     @Autowired
     public DatabaseConfiguration(Environment environment,
-            DataSource dataSource) {
+            DataSource dataSource, @ProfileProperties Properties properties) {
         this.environment = environment;
         this.dataSource = dataSource;
+        this.properties = properties;
     }
 
     @Bean
@@ -53,6 +65,7 @@ public class DatabaseConfiguration {
        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean =
                new LocalContainerEntityManagerFactoryBean();
        entityManagerFactoryBean.setJpaVendorAdapter(jpaVendorAdapter);
+       entityManagerFactoryBean.setJpaProperties(properties);
        entityManagerFactoryBean.setDataSource(dataSource);
        entityManagerFactoryBean.setPackagesToScan("by.ttre16.**.model");
        entityManagerFactoryBean.setJpaPropertyMap(jpaPropertyMap());
@@ -60,6 +73,7 @@ public class DatabaseConfiguration {
     }
 
     @Bean
+    @Profile(NOT_JDBC)
     public PlatformTransactionManager transactionManager(
             EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager tm = new JpaTransactionManager();
@@ -67,7 +81,41 @@ public class DatabaseConfiguration {
         tm.setEntityManagerFactory(entityManagerFactory);
         return tm;
     }
-    
+
+    @Bean
+    public HibernateJpaVendorAdapter jpaVendorAdapter() {
+        HibernateJpaVendorAdapter jpaVendorAdapter =
+                new HibernateJpaVendorAdapter();
+        jpaVendorAdapter.setShowSql(parseBoolean(
+                environment.getProperty("jpa.show_sql")));
+        jpaVendorAdapter.setDatabasePlatform(
+                properties.getProperty(HIBERNATE_DIALECT));
+        return jpaVendorAdapter;
+    }
+
+    @Bean
+    public DataSourceInitializer dataSourceInitializer() {
+        ResourceDatabasePopulator resourceDatabasePopulator =
+                new ResourceDatabasePopulator();
+        resourceDatabasePopulator.addScript(new ClassPathResource(
+                properties.getProperty(INIT_SCRIPT_LOCATION)));
+
+        String populateScript = properties.getProperty(
+                POPULATE_SCRIPT_LOCATION);
+        if (populateScript != null) {
+            resourceDatabasePopulator.addScript(
+                    new ClassPathResource(populateScript));
+        }
+
+        DataSourceInitializer dataSourceInitializer =
+                new DataSourceInitializer();
+        dataSourceInitializer.setEnabled(
+                parseBoolean(properties.getProperty(DATABASE_ENABLED)));
+        dataSourceInitializer.setDataSource(dataSource);
+        dataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
+        return dataSourceInitializer;
+    }
+
     @Bean
     public Map<String, String> jpaPropertyMap() {
         Map<String, String> jpaPropertyMap = new HashMap<>();
@@ -86,5 +134,14 @@ public class DatabaseConfiguration {
         jpaPropertyMap.put(USE_QUERY_CACHE,
                 jpaPropertyMap.get("hibernate.use_query_cache"));
         return jpaPropertyMap;
+    }
+
+    @Bean
+    @Profile(JDBC)
+    public DataSourceTransactionManager dataSourceTransactionManager() {
+        DataSourceTransactionManager transactionManager =
+                new DataSourceTransactionManager();
+        transactionManager.setDataSource(dataSource);
+        return  transactionManager;
     }
 }
