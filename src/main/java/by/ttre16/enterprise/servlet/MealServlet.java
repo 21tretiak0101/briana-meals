@@ -1,12 +1,11 @@
 package by.ttre16.enterprise.servlet;
 
-import by.ttre16.enterprise.configuration.ApplicationConfiguration;
-import by.ttre16.enterprise.controller.MealRestController;
+import by.ttre16.enterprise.configuration.root.RootContextConfiguration;
+import by.ttre16.enterprise.controller.rest.MealRestController;
 import by.ttre16.enterprise.dto.MealTo;
 import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.model.User;
 import org.slf4j.Logger;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.servlet.ServletConfig;
@@ -36,7 +35,7 @@ public class MealServlet extends HttpServlet {
         super.init(config);
         context = new AnnotationConfigApplicationContext();
         context.getEnvironment().setActiveProfiles(DEVELOPMENT, DATA_JPA);
-        context.register(ApplicationConfiguration.class);
+        context.register(RootContextConfiguration.class);
         context.refresh();
         controller = context.getBean(MealRestController.class);
     }

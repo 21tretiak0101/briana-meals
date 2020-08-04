@@ -22,6 +22,7 @@ import static java.lang.String.format;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
+@Transactional
 public class MealService {
     private final MealRepository repository;
     private static final Logger log = getLogger(MealService.class);
@@ -39,34 +40,33 @@ public class MealService {
         return new ArrayList<>(repository.getAll(userId));
     }
 
-    @Transactional
     public Meal save(Integer userId, Meal meal) {
         Meal savedMeal = this.repository.save(userId, meal);
         log.info("Save meal with id: '{}'.", meal.getId());
         return savedMeal;
     }
 
-    @Transactional
     public void delete(Integer userId, Integer mealId) {
         checkNotFoundWithId(this.repository.deleteOne(userId, mealId), mealId);
         log.info("Delete meal with id: '{}'.", mealId);
     }
 
+    @Transactional(readOnly = true)
     public Meal getOne(Integer userId, Integer mealId) {
         log.info("Get meal with id: '{}'.", mealId);
         return repository.getOne(userId, mealId)
                 .orElseThrow(() -> new NotFoundException("Meal not found"));
     }
 
+    @Transactional(readOnly = true)
     public List<Meal> getBetweenInclusive(@Nullable LocalDateTime startDate,
-            @Nullable LocalDateTime endDate, int userId) {
+            @Nullable LocalDateTime endDate, Integer userId) {
         return new ArrayList<>(repository.getBetweenHalfOpen(
                 atStartOfDayOrMin(startDate),
                 atEndOfDayOrMax(endDate), userId));
     }
 
-    @Transactional
-    public void update(Meal meal, int userId) {
+    public void update(Meal meal, Integer userId) {
         log.info("Update meal with id: '{}'.", meal.getId());
         checkNotFoundWithId(repository.save(userId, meal), meal.getId());
     }
