@@ -5,6 +5,7 @@ import by.ttre16.enterprise.service.MealService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static by.ttre16.enterprise.data.MealTestData.*;
@@ -25,9 +26,9 @@ public class MealJspControllerTest extends AbstractJspControllerTest {
         perform(post(MEAL_JSP_URL + "/delete/" + MEAL5_ID))
                 .andExpect(redirectedUrl("/meals"))
                 .andDo(print());
-        Map<Integer, Meal> adminMealMap = MEALS.get(ADMIN_ID);
-        adminMealMap.remove(MEAL5_ID);
-        assertMatch(adminMealMap.values(),
-                mealService.getAllByUserId(ADMIN_ID));
+        ArrayList<Meal> adminMeals = new ArrayList<>();
+        adminMeals.add(MEALS.get(ADMIN_ID).get(MEAL6_ID));
+        adminMeals.add(MEALS.get(ADMIN_ID).get(MEAL7_ID));
+        assertMatch(adminMeals, mealService.getAllByUserId(ADMIN_ID));
     }
 }

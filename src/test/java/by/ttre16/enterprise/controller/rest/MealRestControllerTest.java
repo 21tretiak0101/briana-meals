@@ -6,8 +6,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
+import java.util.ArrayList;
 
 import static by.ttre16.enterprise.controller.util.json.JsonUtil.*;
 import static by.ttre16.enterprise.data.MealTestData.*;
@@ -20,6 +21,7 @@ import static org.springframework.test.web.servlet.result
 import static org.springframework.test.web.servlet.result.
         MockMvcResultMatchers.*;
 
+@Transactional
 public class MealRestControllerTest extends AbstractRestControllerTest {
 
     @Autowired
@@ -67,9 +69,9 @@ public class MealRestControllerTest extends AbstractRestControllerTest {
         perform(delete(MEAL_REST_URL + "/" + MEAL5_ID))
                 .andExpect(status().isNoContent())
                 .andDo(print());
-        Map<Integer, Meal> adminMealMap = MEALS.get(ADMIN_ID);
-        adminMealMap.remove(MEAL5_ID);
-        assertMatch(adminMealMap.values(),
-                mealService.getAllByUserId(ADMIN_ID));
+        ArrayList<Meal> adminMeals = new ArrayList<>();
+        adminMeals.add(MEALS.get(ADMIN_ID).get(MEAL6_ID));
+        adminMeals.add(MEALS.get(ADMIN_ID).get(MEAL7_ID));
+        assertMatch(adminMeals, mealService.getAllByUserId(ADMIN_ID));
     }
 }
