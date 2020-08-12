@@ -6,8 +6,8 @@ import javax.servlet.ServletException;
 import org.springframework.web.servlet.support.
         AbstractAnnotationConfigDispatcherServletInitializer;
 
-import static by.ttre16.enterprise.util.ProfileUtil.DATA_JPA;
-import static by.ttre16.enterprise.util.ProfileUtil.DEVELOPMENT;
+import static by.ttre16.enterprise.util.profile.ProfileUtil.DATA_JPA;
+import static by.ttre16.enterprise.util.profile.ProfileUtil.DEVELOPMENT;
 
 public class WebApplicationInitializer
         extends AbstractAnnotationConfigDispatcherServletInitializer {
