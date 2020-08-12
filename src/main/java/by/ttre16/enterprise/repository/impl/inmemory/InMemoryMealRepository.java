@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static by.ttre16.enterprise.util.ProfileUtil.IN_MEMORY;
+import static by.ttre16.enterprise.util.profile.ProfileUtil.IN_MEMORY;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 

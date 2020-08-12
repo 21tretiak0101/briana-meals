@@ -1,10 +1,12 @@
 package by.ttre16.enterprise.controller.jsp;
 
+import by.ttre16.enterprise.controller.AbstractMealController;
+import by.ttre16.enterprise.dto.MealTo;
 import by.ttre16.enterprise.model.Meal;
-import by.ttre16.enterprise.service.MealService;
 import by.ttre16.enterprise.security.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,25 +16,21 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static by.ttre16.enterprise.util.ActionType.CREATE;
-import static by.ttre16.enterprise.util.ActionType.UPDATE;
-import static by.ttre16.enterprise.util.DateTimeUtil.atEndOfDayOrMax;
-import static by.ttre16.enterprise.util.DateTimeUtil.atStartOfDayOrMin;
-import static by.ttre16.enterprise.util.MealUtil.getMealsWithExcess;
-import static by.ttre16.enterprise.util.ServletUtil.getMeal;
-import static by.ttre16.enterprise.util.ServletUtil.getParameter;
-import static by.ttre16.enterprise.util.ValidationUtil.checkNew;
+import static by.ttre16.enterprise.util.web.ActionType.CREATE;
+import static by.ttre16.enterprise.util.web.ActionType.UPDATE;
+import static by.ttre16.enterprise.util.web.ServletUtil.getMeal;
+import static by.ttre16.enterprise.util.web.ServletUtil.getParameter;
+import static by.ttre16.enterprise.util.web.UrlUtil.MEAL_JSP_URL;
 
 @Controller
-@RequestMapping("/meals")
-public class JspMealController {
+@RequestMapping(MEAL_JSP_URL)
+public class MealJspController extends AbstractMealController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final MealService service;
     private final SecurityUtil securityUtil;
 
-    public JspMealController(MealService service, SecurityUtil securityUtil) {
-        this.service = service;
+    @Autowired
+    public MealJspController(SecurityUtil securityUtil) {
         this.securityUtil = securityUtil;
     }
 
@@ -40,27 +38,22 @@ public class JspMealController {
     public String save(@PathVariable String action,
             HttpServletRequest request) {
         Integer userId = securityUtil.getAuthUserId();
+        Integer mealId = getParameter(request, "mealId", Integer::parseInt);
         Meal meal = getMeal(request);
         meal.getUser().setId(userId);
-        log.info("Save meal: {}", meal);
         switch(action) {
             case CREATE:
-                checkNew(meal);
-                log.info("update {}", meal);
-                service.save(userId, meal);
+                super.create(meal, userId);
                 break;
             case UPDATE:
-                log.info("update {} with id={}", meal, meal.getId());
-                service.update(meal, userId);
+                super.update(userId, meal, mealId);
         }
         return "redirect:/meals";
     }
 
     @PostMapping("/delete/{mealId}")
     public String delete(@PathVariable Integer mealId) {
-        Integer userId = securityUtil.getAuthUserId();
-        log.info("Delete {}", mealId);
-        service.delete(userId, mealId);
+        super.delete(securityUtil.getAuthUserId(), mealId);
         return "redirect:/meals";
     }
 
@@ -77,13 +70,12 @@ public class JspMealController {
                 LocalTime::parse);
         log.info("Get between dates({} - {}) time({} - {}) for user {}",
                 startDate, endDate, startTime, endTime, userId);
-        List<Meal> mealsDateFiltered = service.getBetweenInclusive(
-                atStartOfDayOrMin(startDate, startTime),
-                atEndOfDayOrMax(endDate, endTime),
-                userId);
-        model.addAttribute("meals", getMealsWithExcess(
-                mealsDateFiltered, startTime, endTime,
-                securityUtil.getAuthUserCaloriesPerDay()));
+
+        List<MealTo> meals =
+                super.getBetween(startDate, endDate, startTime, endTime, userId,
+                        securityUtil.getAuthUserCaloriesPerDay());
+
+        model.addAttribute("meals", meals);
         return "meals";
     }
 
@@ -92,7 +84,7 @@ public class JspMealController {
             @PathVariable(required = false) Integer id, Model model) {
         if (action.equals(UPDATE)) {
             Integer userId = securityUtil.getAuthUserId();
-            model.addAttribute("meal", service.getOne(userId, id));
+            model.addAttribute("meal", super.get(userId, id));
         } else {
             model.addAttribute("meal", null);
         }

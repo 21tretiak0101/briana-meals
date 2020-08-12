@@ -2,7 +2,7 @@ package by.ttre16.enterprise.service;
 
 import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.model.User;
-import by.ttre16.enterprise.service.util.MealTestData;
+import by.ttre16.enterprise.data.MealTestData;
 import by.ttre16.enterprise.util.exception.NotFoundException;
 
 import org.junit.*;
@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 
-import static by.ttre16.enterprise.service.util.MealTestData.MEALS;
-import static by.ttre16.enterprise.service.util.UserTestData.*;
+import static by.ttre16.enterprise.data.MealTestData.MEALS;
+import static by.ttre16.enterprise.data.UserTestData.*;
 import static java.util.Objects.requireNonNull;
 import static org.junit.Assert.assertThrows;
 import static org.slf4j.LoggerFactory.getLogger;

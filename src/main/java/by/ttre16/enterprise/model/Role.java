@@ -13,6 +13,6 @@ public class Role extends AbstractNamedEntity {
 
     @Override
     public String toString() {
-        return name;
+        return name + ": " + id;
     }
 }

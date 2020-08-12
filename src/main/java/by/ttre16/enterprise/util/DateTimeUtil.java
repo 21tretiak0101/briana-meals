@@ -1,6 +1,7 @@
 package by.ttre16.enterprise.util;
 
 import org.springframework.lang.Nullable;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -65,5 +66,15 @@ public class DateTimeUtil {
             return ld.atStartOfDay();
         }
         return LocalDateTime.of(ld, lt);
+    }
+
+    @Nullable
+    public static LocalDate parseLocalDate(@Nullable String str) {
+        return StringUtils.isEmpty(str) ? null : LocalDate.parse(str);
+    }
+
+    @Nullable
+    public static LocalTime parseLocalTime(@Nullable String str) {
+        return StringUtils.isEmpty(str) ? null : LocalTime.parse(str);
     }
 }

@@ -1,4 +1,4 @@
-package by.ttre16.enterprise.util;
+package by.ttre16.enterprise.util.web;
 
 import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.model.User;

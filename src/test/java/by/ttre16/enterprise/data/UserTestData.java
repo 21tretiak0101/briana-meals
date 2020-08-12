@@ -1,7 +1,9 @@
-package by.ttre16.enterprise.service.util;
+package by.ttre16.enterprise.data;
 
+import by.ttre16.enterprise.controller.util.matcher.TestMatcher;
 import by.ttre16.enterprise.model.Role;
 import by.ttre16.enterprise.model.User;
+import by.ttre16.enterprise.service.util.AssertUtil;
 
 import java.util.*;
 
@@ -14,6 +16,8 @@ public class UserTestData extends TestData {
     public static final String NOT_FOUND_EMAIL = "mail@mail.com";
     public static final Role ROLE_USER = getRoleUser();
     public static final Role ROLE_ADMIN = getRoleAdmin();
+    public static final TestMatcher<User> USER_TEST_MATCHER =
+            new TestMatcher<>(User.class, "meals", "registered");
 
     static {
         USERS.put(USER_ID, new User(1, "simple_user", "test@gmail.com",

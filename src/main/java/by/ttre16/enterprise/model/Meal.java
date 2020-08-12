@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static java.util.Objects.hash;
+import static java.util.Objects.nonNull;
 
 @Entity
 @Table(name = "meals")
@@ -112,7 +112,6 @@ public class Meal extends AbstractBaseEntity {
                 "calories=" + calories +
                 ", dateTime=" + dateTime +
                 ", description='" + description + '\'' +
-                ", userId=" + user.getId() +
                 ", id=" + id +
                 '}';
     }

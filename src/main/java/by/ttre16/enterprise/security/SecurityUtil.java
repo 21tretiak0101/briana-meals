@@ -6,6 +6,7 @@ public class SecurityUtil {
     private final UserService userService;
     private Integer authUserId;
     private Integer authUserCaloriesPerDay;
+    private static final Integer TEST_ADMIN_ID = 2;
 
     public SecurityUtil(UserService userService) {
         this.userService = userService;
@@ -21,8 +22,11 @@ public class SecurityUtil {
                 .getCaloriesPerDay();
     }
 
+    /**
+     * @return authenticated user ID
+     */
     public Integer getAuthUserId() {
-        return authUserId;
+        return TEST_ADMIN_ID;
     }
 
     public Integer getAuthUserCaloriesPerDay() {
