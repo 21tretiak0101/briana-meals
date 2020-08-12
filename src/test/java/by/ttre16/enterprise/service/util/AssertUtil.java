@@ -15,8 +15,6 @@ public class AssertUtil {
 
     public static <T> void assertMatch(T expected, T actual,
             String ...ignoring) {
-        log.info("here ex: {}", expected);
-        log.info("here ac: {}", actual);
         RecursiveComparisonConfiguration recursiveComparisonConfiguration =
                 new RecursiveComparisonConfiguration();
         recursiveComparisonConfiguration.ignoreCollectionOrder(true);

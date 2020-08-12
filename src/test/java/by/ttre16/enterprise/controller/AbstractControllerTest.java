@@ -4,8 +4,11 @@ import by.ttre16.enterprise.AbstractTest;
 import by.ttre16.enterprise.configuration.root.RootContextConfiguration;
 import by.ttre16.enterprise.configuration.servlet.ServletContextConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.cache.CacheManager;
+import org.springframework.http.converter.json
+        .MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -21,6 +24,7 @@ import javax.annotation.PostConstruct;
 
 import static by.ttre16.enterprise.util.profile.ProfileUtil.DATA_JPA;
 import static by.ttre16.enterprise.util.profile.ProfileUtil.TEST;
+import static java.util.Objects.requireNonNull;
 
 @ContextConfiguration(classes = {ServletContextConfiguration.class,
         RootContextConfiguration.class})
@@ -29,6 +33,8 @@ import static by.ttre16.enterprise.util.profile.ProfileUtil.TEST;
 public abstract class AbstractControllerTest extends AbstractTest {
     private static final CharacterEncodingFilter CHARACTER_ENCODING_FILTER =
             new CharacterEncodingFilter();
+
+    public static ObjectMapper objectMapper;
 
     static {
         CHARACTER_ENCODING_FILTER.setEncoding("UTF-8");
@@ -43,7 +49,13 @@ public abstract class AbstractControllerTest extends AbstractTest {
     @Autowired
     protected MappingJackson2HttpMessageConverter messageConverter;
 
-    public static ObjectMapper objectMapper;
+    @Autowired
+    private CacheManager cacheManager;
+
+    @Before
+    public void setUp() {
+        requireNonNull(cacheManager.getCache("users")).clear();
+    }
 
     @PostConstruct
     private void init() {
