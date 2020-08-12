@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page import="by.ttre16.enterprise.util.ActionType" %>
+<%@ page import="by.ttre16.enterprise.util.web.ActionType" %>
 <html>
 <head>
     <title><spring:message code="app.title"/></title>

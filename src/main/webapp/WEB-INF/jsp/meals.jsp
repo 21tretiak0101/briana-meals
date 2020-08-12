@@ -2,15 +2,17 @@
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page import="by.ttre16.enterprise.util.ActionType" %>
+<%@ page import="by.ttre16.enterprise.util.web.ActionType" %>
 <%@ page import="by.ttre16.enterprise.util.DateTimeUtil" %>
+<%@ page import="by.ttre16.enterprise.util.web.UrlUtil" %>
+
 <html>
 <head>
     <title>Meals</title>
 </head>
 <body>
 <div>
-    <form method="get" action="${pageContext.request.contextPath}/meals">
+    <form method="get" action="${pageContext.request.contextPath}${UrlUtil.MEAL_JSP_URL}">
         <input type="hidden" name="action" value="filter">
         <dl>
             <dt><spring:message code="meal.startDate"/></dt>
@@ -69,13 +71,13 @@
                     <td>${meal.calories}</td>
                     <td>${meal.description}</td>
                     <td>
-                        <form action="/meals/delete/${meal.id}"
+                        <form action="${UrlUtil.MEAL_JSP_URL}/delete/${meal.id}"
                               method="post">
                             <button type="submit"><spring:message code="common.delete"/></button>
                         </form>
                     </td>
                     <td>
-                        <form action="/meals/edit/${ActionType.UPDATE}/${meal.id}">
+                        <form action="${UrlUtil.MEAL_JSP_URL}/edit/${ActionType.UPDATE}/${meal.id}">
                             <button type="submit"><spring:message code="common.update"/></button>
                         </form>
                     </td>
@@ -89,7 +91,7 @@
     </c:if>
     <br>
     <span>
-        <a href="/meals/edit/${ActionType.CREATE}"><spring:message code="common.add"/></a>
+        <a href="${UrlUtil.MEAL_JSP_URL}/edit/${ActionType.CREATE}"><spring:message code="common.add"/></a>
     </span>
 </div>
 </body>

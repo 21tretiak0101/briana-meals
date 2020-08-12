@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ page import="by.ttre16.enterprise.util.web.UrlUtil" %>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -8,7 +9,7 @@
 </head>
 <body>
 <div>
-    <form action="${pageContext.request.contextPath}/auth" method="post">
+    <form action="${pageContext.request.contextPath}${UrlUtil.ROOT_JSP_URL}" method="post">
         <label for="select-one">
             <spring:message code="app.login"/>
         </label>
