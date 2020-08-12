@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import static by.ttre16.enterprise.data.MealTestData.*;
 import static by.ttre16.enterprise.util.web.UrlUtil.MEAL_JSP_URL;

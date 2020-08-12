@@ -8,10 +8,10 @@ import org.springframework.dao.DataAccessException;
 import java.util.List;
 
 import static by.ttre16.enterprise.service.util.AssertUtil.assertThrowsNotFoundException;
-import static by.ttre16.enterprise.service.util.MealTestData.*;
-import static by.ttre16.enterprise.service.util.TestData.ADMIN_ID;
-import static by.ttre16.enterprise.service.util.TestData.NOT_FOUND_ID;
-import static by.ttre16.enterprise.service.util.TestData.USER_ID;
+import static by.ttre16.enterprise.data.MealTestData.*;
+import static by.ttre16.enterprise.data.TestData.ADMIN_ID;
+import static by.ttre16.enterprise.data.TestData.NOT_FOUND_ID;
+import static by.ttre16.enterprise.data.TestData.USER_ID;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertThrows;

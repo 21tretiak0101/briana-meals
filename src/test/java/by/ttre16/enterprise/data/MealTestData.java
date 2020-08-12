@@ -1,6 +1,8 @@
-package by.ttre16.enterprise.service.util;
+package by.ttre16.enterprise.data;
 
+import by.ttre16.enterprise.controller.util.matcher.TestMatcher;
 import by.ttre16.enterprise.model.Meal;
+import by.ttre16.enterprise.service.util.AssertUtil;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -16,6 +18,8 @@ public class MealTestData extends TestData {
     public static final Integer MEAL7_ID = 7;
     public static final LocalDateTime MEAL3_DATE_TIME = of(2020, 5, 13, 20, 0);
     public static final LocalDateTime MEAL4_DATE_TIME = of(2020, 6, 1, 10, 0);
+    public static final TestMatcher<Meal> MEAL_TEST_MATCHER =
+            new TestMatcher<>(Meal.class, "dateTime", "user");
 
     static {
         Map<Integer, Meal> userMeals = new HashMap<>();
