@@ -27,8 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static by.ttre16.enterprise.util.ProfilePropertiesUtil.*;
-import static by.ttre16.enterprise.util.ProfileUtil.*;
+import static by.ttre16.enterprise.util.profile.ProfilePropertiesUtil.*;
+import static by.ttre16.enterprise.util.profile.ProfileUtil.*;
 import static java.lang.Boolean.parseBoolean;
 import static org.hibernate.cfg.AvailableSettings.*;
 
@@ -130,9 +130,13 @@ public class DatabaseConfiguration {
         jpaPropertyMap.put(ConfigSettings.PROVIDER,
                 environment.getProperty("hibernate.cache_provider"));
         jpaPropertyMap.put(USE_SECOND_LEVEL_CACHE,
-                jpaPropertyMap.get("hibernate.use_second_level_cache"));
+                environment.getProperty("hibernate.use_second_level_cache"));
         jpaPropertyMap.put(USE_QUERY_CACHE,
-                jpaPropertyMap.get("hibernate.use_query_cache"));
+                environment.getProperty("hibernate.use_query_cache"));
+        String missingCacheStrategyKey =
+                "hibernate.javax.cache.missing_cache_strategy";
+        jpaPropertyMap.put(missingCacheStrategyKey,
+                environment.getProperty(missingCacheStrategyKey));
         return jpaPropertyMap;
     }
 

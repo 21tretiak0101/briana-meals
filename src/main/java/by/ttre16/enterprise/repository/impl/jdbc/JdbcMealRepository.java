@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static by.ttre16.enterprise.util.ProfileUtil.JDBC;
+import static by.ttre16.enterprise.util.profile.ProfileUtil.JDBC;
 import static org.springframework.dao.support.DataAccessUtils.singleResult;
 
 @Repository

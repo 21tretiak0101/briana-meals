@@ -11,8 +11,8 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import java.util.Properties;
 
-import static by.ttre16.enterprise.util.ProfilePropertiesUtil.*;
-import static by.ttre16.enterprise.util.ProfileUtil.TEST;
+import static by.ttre16.enterprise.util.profile.ProfilePropertiesUtil.*;
+import static by.ttre16.enterprise.util.profile.ProfileUtil.TEST;
 
 @Profile(TEST)
 @Configuration

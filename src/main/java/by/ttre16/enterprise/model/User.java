@@ -9,7 +9,7 @@ import javax.validation.constraints.*;
 import java.util.Date;
 import java.util.List;
 
-import static by.ttre16.enterprise.util.MealUtil.DEFAULT_CALORIES_PER_DAY;
+import static by.ttre16.enterprise.util.entity.MealUtil.DEFAULT_CALORIES_PER_DAY;
 import static java.util.Collections.emptyList;
 
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)

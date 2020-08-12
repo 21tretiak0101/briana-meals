@@ -18,7 +18,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static by.ttre16.enterprise.util.ProfileUtil.JDBC;
+import static by.ttre16.enterprise.util.profile.ProfileUtil.JDBC;
 import static java.util.Objects.nonNull;
 import static org.slf4j.LoggerFactory.getLogger;
 

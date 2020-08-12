@@ -1,4 +1,4 @@
-package by.ttre16.enterprise.util;
+package by.ttre16.enterprise.util.profile;
 
 public class ProfileUtil {
     public static final String DATA_JPA = "dataJpa";

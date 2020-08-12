@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
-import static by.ttre16.enterprise.util.ProfileUtil.DATA_JPA;
+import static by.ttre16.enterprise.util.profile.ProfileUtil.DATA_JPA;
 
 @Repository
 @Profile(DATA_JPA)

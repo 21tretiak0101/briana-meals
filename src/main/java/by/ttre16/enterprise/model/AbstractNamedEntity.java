@@ -3,6 +3,7 @@ package by.ttre16.enterprise.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @MappedSuperclass
 public abstract class AbstractNamedEntity extends AbstractBaseEntity {
@@ -34,8 +35,8 @@ public abstract class AbstractNamedEntity extends AbstractBaseEntity {
         this.name = name;
     }
 
-    @Override
+    /*@Override
     public String toString() {
         return getClass().getSimpleName() + "(" + name + ")";
-    }
+    }*/
 }

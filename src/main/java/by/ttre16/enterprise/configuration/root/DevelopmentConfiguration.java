@@ -11,8 +11,8 @@ import org.springframework.core.env.Environment;
 
 import java.util.Properties;
 
-import static by.ttre16.enterprise.util.ProfilePropertiesUtil.*;
-import static by.ttre16.enterprise.util.ProfileUtil.DEVELOPMENT;
+import static by.ttre16.enterprise.util.profile.ProfilePropertiesUtil.*;
+import static by.ttre16.enterprise.util.profile.ProfileUtil.DEVELOPMENT;
 
 @Profile(DEVELOPMENT)
 @Configuration

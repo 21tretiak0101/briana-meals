@@ -1,4 +1,4 @@
-package by.ttre16.enterprise.util;
+package by.ttre16.enterprise.util.entity;
 
 import by.ttre16.enterprise.dto.MealTo;
 import by.ttre16.enterprise.model.Meal;

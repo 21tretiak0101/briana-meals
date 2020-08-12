@@ -1,4 +1,4 @@
-package by.ttre16.enterprise.util;
+package by.ttre16.enterprise.util.web;
 
 public class ActionType {
     public static final String GET = "GET";

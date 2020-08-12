@@ -19,10 +19,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-import static by.ttre16.enterprise.util.ActionType.*;
-import static by.ttre16.enterprise.util.ProfileUtil.DATA_JPA;
-import static by.ttre16.enterprise.util.ProfileUtil.DEVELOPMENT;
-import static by.ttre16.enterprise.util.ServletUtil.getParameter;
+import static by.ttre16.enterprise.util.web.ActionType.*;
+import static by.ttre16.enterprise.util.profile.ProfileUtil.DATA_JPA;
+import static by.ttre16.enterprise.util.profile.ProfileUtil.DEVELOPMENT;
+import static by.ttre16.enterprise.util.web.ServletUtil.getParameter;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
@@ -58,7 +58,7 @@ public class MealServlet extends HttpServlet {
         LocalTime endTime = getParameter(req, "endTime",
                 LocalTime::parse);
         List<MealTo> meals = controller
-                .getBetween(startDate, endDate, startTime, endTime);
+                .getWithExcess(startDate, endDate, startTime, endTime);
         req.setAttribute("meals", meals);
         req.getRequestDispatcher("/meals.jsp").forward(req, resp);
     }
