@@ -2,8 +2,6 @@ package by.ttre16.enterprise.configuration.servlet;
 
 import by.ttre16.enterprise.formatter.LocalDateFormatter;
 import by.ttre16.enterprise.formatter.LocalTimeFormatter;
-import by.ttre16.enterprise.security.SecurityUtil;
-import by.ttre16.enterprise.service.UserService;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
@@ -17,7 +15,6 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json
         .MappingJackson2HttpMessageConverter;
-import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -73,12 +70,6 @@ public class ServletContextConfiguration implements WebMvcConfigurer {
         messageSource.setDefaultEncoding("utf-8");
         messageSource.setUseCodeAsDefaultMessage(true);
         return messageSource;
-    }
-
-    @Bean
-    @SessionScope
-    public SecurityUtil securityUtil(UserService service) {
-        return new SecurityUtil(service);
     }
 
     @Override

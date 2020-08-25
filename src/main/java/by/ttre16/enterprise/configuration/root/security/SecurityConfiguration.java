@@ -2,7 +2,7 @@ package by.ttre16.enterprise.configuration.root.security;
 
 import by.ttre16.enterprise.security.jwt.filter.JwtAuthorizationFilter;
 import by.ttre16.enterprise.security.jwt.filter.JwtAuthenticationFilter;
-import by.ttre16.enterprise.security.jwt.JwtConfigurer;
+import by.ttre16.enterprise.security.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,8 +24,7 @@ import org.springframework.security.config.annotation.web.configuration
 import org.springframework.security.config.annotation.authentication.builders
         .AuthenticationManagerBuilder;
 
-import static by.ttre16.enterprise.util.web.UrlUtil.ADMIN_REST_URL;
-import static by.ttre16.enterprise.util.web.UrlUtil.AUTH_REST_URL;
+import static by.ttre16.enterprise.util.web.UrlUtil.*;
 
 @Configuration
 @EnableWebSecurity
@@ -36,9 +35,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${jwt.passwordEncoderStrength}")
     private Integer passwordEncoderStrength;
     private final UserDetailsService userDetailsService;
+    private final JwtService jwtService;
 
-    public SecurityConfiguration(UserDetailsService userDetailsService) {
+    public SecurityConfiguration(UserDetailsService userDetailsService,
+            JwtService jwtService) {
         this.userDetailsService = userDetailsService;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -53,13 +55,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
             .and()
                 .addFilter(new JwtAuthenticationFilter(
-                        AUTH_REST_URL,
-                        authenticationManager(),
-                        jwtConfigurer())
+                                AUTH_REST_URL,
+                                authenticationManager(),
+                                jwtService)
                 )
-                .addFilterAfter(new JwtAuthorizationFilter(
-                                jwtConfigurer()
-                        ),
+                .addFilterAfter(new JwtAuthorizationFilter(jwtService),
                         JwtAuthenticationFilter.class
                 );
     }
@@ -74,10 +74,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             throws Exception {
         auth.userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
-    }
-
-    @Bean
-    public JwtConfigurer jwtConfigurer() {
-        return new JwtConfigurer(userDetailsService);
     }
 }
