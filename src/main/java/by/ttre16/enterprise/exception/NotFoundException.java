@@ -1,4 +1,4 @@
-package by.ttre16.enterprise.util.exception;
+package by.ttre16.enterprise.exception;
 
 public class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {
