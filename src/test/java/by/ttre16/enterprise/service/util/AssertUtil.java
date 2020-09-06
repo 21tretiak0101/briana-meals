@@ -1,6 +1,6 @@
 package by.ttre16.enterprise.service.util;
 
-import by.ttre16.enterprise.util.exception.NotFoundException;
+import by.ttre16.enterprise.exception.NotFoundException;
 import org.junit.function.ThrowingRunnable;
 import org.slf4j.Logger;
 import org.assertj.core.api.recursive.comparison

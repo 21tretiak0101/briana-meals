@@ -29,6 +29,7 @@
     <logger name="by.ttre16.enterprise" level="DEBUG"/>
     <logger name="org.springframework.jdbc" level="DEBUG"/>
     <logger name="org.springframework.web.servlet" level="DEBUG"/>
+    <logger name="org.springframework.security" level="DEBUG"/>
 
     <root level="WARN">
         <appender-ref ref="CONSOLE" />

@@ -1,9 +1,10 @@
 package by.ttre16.enterprise.controller;
 
-import by.ttre16.enterprise.dto.MealTo;
+import by.ttre16.enterprise.dto.mapper.MealEntityMapper;
+import by.ttre16.enterprise.dto.to.MealTo;
 import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.service.MealService;
-import by.ttre16.enterprise.util.entity.DtoUtil;
+import by.ttre16.enterprise.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import java.util.List;
 
 import static by.ttre16.enterprise.util.DateTimeUtil.atEndOfDayOrMax;
 import static by.ttre16.enterprise.util.DateTimeUtil.atStartOfDayOrMin;
-import static by.ttre16.enterprise.util.entity.MealUtil.getMealsWithExcess;
 import static by.ttre16.enterprise.util.ValidationUtil.assureIdConsistent;
 import static by.ttre16.enterprise.util.ValidationUtil.checkNew;
 
@@ -24,6 +24,13 @@ public abstract class AbstractMealController {
 
     @Autowired
     private MealService mealService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    protected MealEntityMapper mealMapper;
 
     public List<Meal> getAll(Integer userId) {
         log.info("Get all");
@@ -46,7 +53,7 @@ public abstract class AbstractMealController {
         mealService.delete(userId, mealId);
     }
 
-    public void update(Integer userId, Meal meal, Integer id) {
+    public void save(Integer userId, Meal meal, Integer id) {
         assureIdConsistent(meal, id);
         log.info("Update {} with id={}", meal, id);
         mealService.update(meal, userId);
@@ -54,13 +61,18 @@ public abstract class AbstractMealController {
 
     public List<MealTo> getBetween(@Nullable LocalDate startDate,
         @Nullable LocalDate endDate, @Nullable LocalTime startTime,
-        @Nullable LocalTime endTime, Integer userId, Integer caloriesPerDay) {
+        @Nullable LocalTime endTime, Integer userId) {
         log.info("Get between dates({} - {}) time({} - {}) for user: {}",
                 startDate, endDate, startTime, endTime, userId);
         List<Meal> meals =  mealService.getBetweenInclusive(
                 atStartOfDayOrMin(startDate, startTime),
                 atEndOfDayOrMax(endDate, endTime),
                 userId);
-        return getMealsWithExcess(meals, startTime, endTime, caloriesPerDay);
+        return mealService.getMealsWithExcess(
+                meals,
+                startTime,
+                endTime,
+                userService.get(userId).getCaloriesPerDay()
+        );
     }
 }

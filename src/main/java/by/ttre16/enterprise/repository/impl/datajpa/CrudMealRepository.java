@@ -14,11 +14,11 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer>,
 
     @Modifying
     @Query("delete from Meal m where m.user.id=:userId and m.id=:id")
-    int delete(@Param("userId") Integer userId, @Param("id") Integer id);
+    Integer delete(@Param("userId") Integer userId, @Param("id") Integer id);
 
     @Modifying
     @Query("delete from Meal m where m.user.id=:userId")
-    int deleteAll(@Param("userId") Integer userId);
+    Integer deleteAll(@Param("userId") Integer userId);
 
     @Query("select m from Meal m left join fetch User u on m.user.id = u.id" +
             " where u.id = ?1 and m.id = ?2")

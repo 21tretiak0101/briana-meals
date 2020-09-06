@@ -2,6 +2,7 @@ package by.ttre16.enterprise.controller.jsp;
 
 import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.service.MealService;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,6 +17,7 @@ import static org.springframework.test.web.servlet.result
 import static org.springframework.test.web.servlet.result.
         MockMvcResultMatchers.*;
 
+@Ignore
 public class MealJspControllerTest extends AbstractJspControllerTest {
     @Autowired
     private MealService mealService;

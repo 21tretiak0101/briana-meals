@@ -1,6 +1,5 @@
 package by.ttre16.enterprise.data;
 
-import by.ttre16.enterprise.controller.util.matcher.TestMatcher;
 import by.ttre16.enterprise.model.Role;
 import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.service.util.AssertUtil;
@@ -16,26 +15,51 @@ public class UserTestData extends TestData {
     public static final String NOT_FOUND_EMAIL = "mail@mail.com";
     public static final Role ROLE_USER = getRoleUser();
     public static final Role ROLE_ADMIN = getRoleAdmin();
-    public static final TestMatcher<User> USER_TEST_MATCHER =
-            new TestMatcher<>(User.class, "meals", "registered");
 
     static {
-        USERS.put(USER_ID, new User(1, "simple_user", "test@gmail.com",
-                "password", true, Collections.singletonList(ROLE_USER)));
+        USERS.put(USER_ID, TestUserBuilder.builder()
+                .id(USER_ID)
+                .name("simple_user")
+                .email("test@gmail.com")
+                .password("$2y$10$TczuFGRWTfbOCmSYktMqne99oIAYbn.8QZv3Id32/aZdBLdDo7Wfu")
+                .roles(Collections.singletonList(ROLE_USER))
+                .enabled(true)
+                .build()
+        );
 
-        USERS.put(ADMIN_ID, new User(2, "admin", "admin@mail.com",
-                "password88-2", true, Arrays.asList(ROLE_USER, ROLE_ADMIN)));
+        USERS.put(ADMIN_ID, TestUserBuilder.builder()
+                .id(ADMIN_ID)
+                .name("admin")
+                .email("admin@mail.com")
+                .password("$2y$12$TCwbCOGqkSOqzDvXjrewYOuR6yeIjPieeBNm4D56IsujhF6gaEIh6")
+                .roles(Arrays.asList(ROLE_USER, ROLE_ADMIN))
+                .enabled(true)
+                .build()
+        );
     }
 
-    public static User getNew() {
-        return new User(null, "New", "new@gmail.com", "newPass", false,
-                new Date(), Collections.singletonList(ROLE_USER),
-                1230, emptyList());
+    public static User getNewUser() {
+        return TestUserBuilder.builder()
+                .id(null)
+                .name("test_user")
+                .email("test_user12@gmail.com")
+                .password("hello-password")
+                .enabled(true)
+                .caloriesPerDay(1230)
+                .roles(Collections.singletonList(ROLE_USER))
+                .meals(emptyList())
+                .build();
+    }
+
+    public static User getNewAdmin() {
+        User newAdmin = getNewUser();
+        newAdmin.setRoles(Arrays.asList(ROLE_USER, ROLE_ADMIN));
+        return newAdmin;
     }
 
     public static User getUpdated(Integer id) {
         User updated = new User(USERS.get(id));
-        updated.setName("UpdatedName");
+        updated.setName("updated_user");
         updated.setCaloriesPerDay(330);
         return updated;
     }

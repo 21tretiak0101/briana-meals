@@ -3,7 +3,7 @@ package by.ttre16.enterprise.service;
 import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.data.MealTestData;
-import by.ttre16.enterprise.util.exception.NotFoundException;
+import by.ttre16.enterprise.exception.NotFoundException;
 
 import org.junit.*;
 import org.slf4j.Logger;
@@ -37,8 +37,8 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void create() {
-        User created = service.create(getNew());
-        User newUser = getNew();
+        User created = service.create(getNewUser());
+        User newUser = getNewUser();
         Integer uid = created.getId();
         newUser.setId(uid);
         assertMatch(newUser, created);
@@ -48,7 +48,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     public void createWithDuplicateEmail() {
         User oldUser = USERS.get(USER_ID);
-        User duplicate = getNew();
+        User duplicate = getNewUser();
         duplicate.setEmail(oldUser.getEmail());
         assertThrows(DataAccessException.class,
                 () -> service.create(duplicate));

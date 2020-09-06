@@ -2,7 +2,7 @@ package by.ttre16.enterprise.service;
 
 import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.repository.UserRepository;
-import by.ttre16.enterprise.util.exception.NotFoundException;
+import by.ttre16.enterprise.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -13,8 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static by.ttre16.enterprise.util.RoleUtil.getRoleAdmin;
+import static by.ttre16.enterprise.util.RoleUtil.getRoleUser;
 import static by.ttre16.enterprise.util.ValidationUtil.checkNotFound;
 import static by.ttre16.enterprise.util.ValidationUtil.checkNotFoundWithId;
+import static java.util.Arrays.asList;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
@@ -31,6 +34,12 @@ public class UserService {
     @CacheEvict(value = "users", allEntries = true)
     public User create(User user) {
         return repository.save(user);
+    }
+
+    @CacheEvict(value = "users", allEntries = true)
+    public User createAsAdmin(User user) {
+        user.setRoles(asList(getRoleUser(), getRoleAdmin()));
+        return this.create(user);
     }
 
     @CacheEvict(value = "users", allEntries = true)
@@ -59,6 +68,7 @@ public class UserService {
         return new ArrayList<>(repository.getAll());
     }
 
+    @CacheEvict(value = "users", allEntries = true)
     public void update(User user) {
         checkNotFoundWithId(repository.save(user), user.getId());
     }

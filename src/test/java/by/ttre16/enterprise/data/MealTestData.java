@@ -7,6 +7,7 @@ import by.ttre16.enterprise.service.util.AssertUtil;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static by.ttre16.enterprise.data.UserTestData.USERS;
 import static java.time.LocalDateTime.of;
 
 public class MealTestData extends TestData {
@@ -25,18 +26,18 @@ public class MealTestData extends TestData {
         Map<Integer, Meal> userMeals = new HashMap<>();
 
         userMeals.put(MEAL3_ID, new Meal(MEAL3_ID, 999,
-                MEAL3_DATE_TIME, "some meal"));
+                MEAL3_DATE_TIME, "some meal", USERS.get(USER_ID)));
         userMeals.put(MEAL4_ID, new Meal(MEAL4_ID, 370,
-                MEAL4_DATE_TIME, "morning meal"));
+                MEAL4_DATE_TIME, "morning meal", USERS.get(USER_ID)));
 
         Map<Integer, Meal> adminMeals = new HashMap<>();
 
         adminMeals.put(MEAL5_ID, new Meal(MEAL5_ID, 550,
-                LocalDateTime.now(), "first meal"));
+                LocalDateTime.now(), "first meal", USERS.get(ADMIN_ID)));
         adminMeals.put(MEAL6_ID, new Meal(MEAL6_ID, 450,
-                LocalDateTime.now(), "evening meal"));
+                LocalDateTime.now(), "evening meal", USERS.get(ADMIN_ID)));
         adminMeals.put(MEAL7_ID, new Meal(MEAL7_ID, 680,
-                LocalDateTime.now(), "night meal"));
+                LocalDateTime.now(), "night meal", USERS.get(ADMIN_ID)));
 
         MEALS.put(USER_ID, userMeals);
         MEALS.put(ADMIN_ID, adminMeals);
@@ -59,7 +60,7 @@ public class MealTestData extends TestData {
     public static Meal getUpdated(Integer userId, Integer mealId) {
         Meal updatedMeal = new Meal(MEALS.get(userId).get(mealId));
         updatedMeal.setDescription("updated meal");
-        updatedMeal.setCalories(0);
+        updatedMeal.setCalories(2300);
         return updatedMeal;
     }
 }

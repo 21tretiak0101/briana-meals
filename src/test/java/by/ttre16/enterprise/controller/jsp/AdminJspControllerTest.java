@@ -1,6 +1,7 @@
 package by.ttre16.enterprise.controller.jsp;
 
 import org.assertj.core.matcher.AssertionMatcher;
+import org.junit.Ignore;
 import org.junit.Test;
 import by.ttre16.enterprise.model.User;
 
@@ -15,6 +16,7 @@ import static org.springframework.test.web.servlet.result
 import static org.springframework.test.web.servlet.result.
         MockMvcResultMatchers.*;
 
+@Ignore
 public class AdminJspControllerTest extends AbstractJspControllerTest {
     @Test
     public void getAll() throws Exception {

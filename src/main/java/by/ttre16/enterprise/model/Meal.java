@@ -9,8 +9,6 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static java.util.Objects.nonNull;
-
 @Entity
 @Table(name = "meals")
 @NamedQueries({
@@ -27,8 +25,8 @@ public class Meal extends AbstractBaseEntity {
     public static final String DELETE_ONE = "Meal.deleteOne";
     public static final String DELETE_ALL = "Meal.deleteAll";
 
-    @Range(min = 10, max = 5000)
     @NotNull
+    @Range(min = 10, max = 5000)
     @Column(name = "calories", nullable = false)
     private Integer calories;
 
@@ -36,8 +34,8 @@ public class Meal extends AbstractBaseEntity {
     @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
 
-    @Size(min = 2, max = 120)
     @NotBlank
+    @Size(min = 2, max = 120)
     @Column(name = "description", nullable = false)
     private String description;
 
@@ -47,27 +45,28 @@ public class Meal extends AbstractBaseEntity {
 
     public Meal() { }
 
+    public Meal(Meal meal) {
+        this(meal.id, meal.calories, meal.dateTime,
+                meal.description, meal.user);
+    }
+
     public Meal(Integer id, Integer calories, LocalDateTime dateTime,
-                String description, User user) {
+            String description) {
+        super(id);
+        this.id = id;
+        this.calories = calories;
+        this.dateTime = dateTime;
+        this.description = description;
+    }
+
+    public Meal(Integer id, Integer calories, LocalDateTime dateTime,
+            String description, User user) {
         super(id);
         this.id = id;
         this.calories = calories;
         this.dateTime = dateTime;
         this.description = description;
         this.user = user;
-    }
-
-    public Meal(Integer id, Integer calories, LocalDateTime dateTime,
-                String description) {
-        super(id);
-        this.id = id;
-        this.calories = calories;
-        this.dateTime = dateTime;
-        this.description = description;
-    }
-
-    public Meal(Meal meal) {
-        this(meal.id, meal.calories, meal.dateTime, meal.description, meal.user);
     }
 
     public void setCalories(Integer calories) {

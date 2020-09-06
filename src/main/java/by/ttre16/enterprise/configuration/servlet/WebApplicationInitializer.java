@@ -1,8 +1,10 @@
 package by.ttre16.enterprise.configuration.servlet;
 
 import by.ttre16.enterprise.configuration.root.RootContextConfiguration;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+
 import org.springframework.web.servlet.support.
         AbstractAnnotationConfigDispatcherServletInitializer;
 
