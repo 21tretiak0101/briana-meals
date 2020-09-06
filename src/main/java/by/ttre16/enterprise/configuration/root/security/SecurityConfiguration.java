@@ -52,6 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, ADMIN_REST_URL).permitAll()
+                .antMatchers("/").permitAll()
                 .anyRequest().authenticated()
             .and()
                 .addFilter(new JwtAuthenticationFilter(

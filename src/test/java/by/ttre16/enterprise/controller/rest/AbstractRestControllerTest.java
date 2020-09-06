@@ -36,7 +36,7 @@ public abstract class AbstractRestControllerTest
                 ))
                 .collect(Collectors.toSet());
 
-        return "Bearer " + jwtService
+        return jwtService.getTokenPrefix() + jwtService
                 .createToken(
                         user.getId(),
                         user.getEmail(),
