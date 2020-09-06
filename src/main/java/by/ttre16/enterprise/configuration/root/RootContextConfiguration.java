@@ -10,7 +10,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan({
 "by.ttre16.enterprise.repository",
         "by.ttre16.enterprise.service",
-        "by.ttre16.enterprise.configuration.root"
+        "by.ttre16.enterprise.configuration.root",
+        "by.ttre16.enterprise.validation",
+        "by.ttre16.enterprise.dto.mapper"
 })
 @EnableJpaRepositories(basePackages = "by.ttre16.enterprise.repository")
 @Import(SecurityConfiguration.class)
