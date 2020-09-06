@@ -9,9 +9,6 @@ import javax.validation.constraints.*;
 import java.util.Date;
 import java.util.List;
 
-import static by.ttre16.enterprise.util.entity.MealUtil.DEFAULT_CALORIES_PER_DAY;
-import static java.util.Collections.emptyList;
-
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @NamedQueries({
     @NamedQuery(name = User.GET_ALL,
@@ -32,7 +29,7 @@ public class User extends AbstractNamedEntity {
 
     @Email
     @NotBlank
-    @Max(value = 50)
+    @Size(max = 50)
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
@@ -57,21 +54,26 @@ public class User extends AbstractNamedEntity {
     private List<Role> roles;
 
     @Column(name = "calories_per_day")
-    private Integer caloriesPerDay = DEFAULT_CALORIES_PER_DAY;
+    private Integer caloriesPerDay = 2000;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @OrderBy("dateTime DESC")
     private List<Meal> meals;
 
-    public User(Integer id, String name, String email, String password,
-                boolean enabled, List<Role> roles) {
-        this(id, name, email, password, enabled, new Date(), roles,
-                DEFAULT_CALORIES_PER_DAY, emptyList());
+    public User() { }
+
+    public User(Integer id) {
+        super(id);
+    }
+
+    public User(User user) {
+        this(user.id, user.name, user.email, user.password, user.enabled,
+                user.registered ,user.roles, user.caloriesPerDay, user.meals);
     }
 
     public User(Integer id, String name, String email, String password,
-                boolean enabled, Date registered, List<Role> roles,
-                Integer caloriesPerDay, List<Meal> meals) {
+            boolean enabled, Date registered, List<Role> roles,
+            Integer caloriesPerDay, List<Meal> meals) {
         super(id, name);
         this.email = email;
         this.password = password;
@@ -81,17 +83,6 @@ public class User extends AbstractNamedEntity {
         this.caloriesPerDay = caloriesPerDay;
         this.meals = meals;
     }
-
-    public User(User user) {
-        this(user.id, user.name, user.email, user.password, user.enabled,
-                 user.registered ,user.roles, user.caloriesPerDay, user.meals);
-    }
-
-    public User(Integer id) {
-        super(id);
-    }
-
-    public User() { }
 
     public void setRegistered(Date registered) {
         this.registered = registered;
