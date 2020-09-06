@@ -4,13 +4,11 @@ import by.ttre16.enterprise.exception.ErrorInfo;
 import by.ttre16.enterprise.exception.ErrorType;
 import by.ttre16.enterprise.exception.IllegalRequestDataException;
 import by.ttre16.enterprise.exception.NotFoundException;
-import by.ttre16.enterprise.validation.InvalidTransferObjectException;
 import org.slf4j.Logger;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,7 +16,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation
         .MethodArgumentTypeMismatchException;
 
+import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
+
+import java.util.stream.Collectors;
 
 import static by.ttre16.enterprise.exception.ErrorType.*;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -73,46 +75,6 @@ public class ExceptionInfoHandler {
                 );
     }
 
-    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
-    @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<ErrorInfo> bindValidationError(
-            HttpServletRequest request, Exception exception) {
-        return logAndGetErrorInfo(
-                request,
-                exception,
-                VALIDATION_ERROR,
-                false,
-                exception.getMessage()
-        );
-    }
-
-    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
-    @ExceptionHandler({
-            InvalidTransferObjectException.class,
-            BindException.class
-    })
-    public ResponseEntity<ErrorInfo> invalidTransferObject(
-            HttpServletRequest request,
-            BindException exception) {
-        StringBuilder builder = new StringBuilder();
-        BindingResult bindingResult = exception.getBindingResult();
-        bindingResult.getFieldErrors()
-                .forEach(field -> builder
-                        .append(field.getField())
-                        .append(": ")
-                        .append(field.getDefaultMessage())
-                        .append("; ")
-                );
-
-        return logAndGetErrorInfo(
-                request,
-                exception,
-                APP_ERROR,
-                true,
-                builder.toString()
-        );
-    }
-
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorInfo> internalServerError(
@@ -126,16 +88,52 @@ public class ExceptionInfoHandler {
         );
     }
 
-    @ResponseStatus(FORBIDDEN)
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorInfo> accessDenied(
-            HttpServletRequest request, Exception exception) {
+    @ResponseStatus(UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(PersistenceException.class)
+    public ResponseEntity<ErrorInfo> persistenceException(
+            HttpServletRequest request,
+            Exception exception) {
+        String message = exception.getMessage();
+        Throwable cause = exception.getCause();
+        if (cause instanceof ConstraintViolationException) {
+            ConstraintViolationException constraintException =
+                    (ConstraintViolationException) cause;
+            message = constraintException.getConstraintViolations().stream()
+                    .map(ex -> ex.getPropertyPath() + ": " + ex.getMessage())
+                    .collect(Collectors.joining(", "));
+        }
         return logAndGetErrorInfo(
                 request,
                 exception,
-                APP_ERROR,
+                VALIDATION_ERROR,
                 true,
-                exception.getMessage()
+                message
+        );
+    }
+
+    @ResponseStatus(UNPROCESSABLE_ENTITY)
+    @ExceptionHandler({
+            MethodArgumentNotValidException.class,
+            BindException.class
+    })
+    public ResponseEntity<ErrorInfo> methodArgumentNotValid(
+            HttpServletRequest request,
+            Exception exception) {
+        BindingResult result = exception instanceof MethodArgumentNotValidException
+                ? ((MethodArgumentNotValidException) exception).getBindingResult()
+                : (BindingResult) exception;
+        String message = result.getFieldErrors().stream()
+                .map(error -> error.getField() + ": " +
+                        (error.getDefaultMessage() != null
+                                ? error.getDefaultMessage()
+                                : error.getCode()))
+                .collect(Collectors.joining(", "));
+        return logAndGetErrorInfo(
+                request,
+                exception,
+                VALIDATION_ERROR,
+                true,
+                message
         );
     }
 

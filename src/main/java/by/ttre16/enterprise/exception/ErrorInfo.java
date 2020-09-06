@@ -3,13 +3,13 @@ package by.ttre16.enterprise.exception;
 public class ErrorInfo {
     private final String url;
     private final ErrorType errorType;
-    private final String detail;
+    private final String details;
 
     public ErrorInfo(CharSequence url, ErrorType errorType,
-            Throwable exception) {
+            CharSequence details) {
         this.url = url.toString();
         this.errorType = errorType;
-        this.detail = exception.getMessage();
+        this.details = details.toString();
     }
 
     @Override
@@ -17,7 +17,7 @@ public class ErrorInfo {
         return "ErrorInfo{" +
                 "url='" + url + '\'' +
                 ", errorType=" + errorType +
-                ", detail='" + detail + '\'' +
+                ", detail='" + details + '\'' +
                 '}';
     }
 }
