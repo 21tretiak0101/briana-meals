@@ -1,5 +1,6 @@
 package by.ttre16.enterprise.repository.impl.datajpa;
 
+import by.ttre16.enterprise.annotation.QualifierRepository;
 import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import static by.ttre16.enterprise.util.profile.ProfileUtil.DATA_JPA;
 
 @Repository
 @Profile(DATA_JPA)
+@QualifierRepository(DataJpaUserRepository.class)
 public class DataJpaUserRepository implements UserRepository {
     private final CrudUserRepository crudUserRepository;
 

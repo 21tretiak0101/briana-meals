@@ -64,7 +64,7 @@
             </thead>
             <tbody>
             <c:forEach var="meal" items="${meals}">
-                <jsp:useBean id="meal" type="by.ttre16.enterprise.dto.MealTo"/>
+                <jsp:useBean id="meal" type="by.ttre16.enterprise.dto.to.MealTo"/>
                 <tr style="color: ${meal.excess ? 'red': 'green'};">
                     <td>${meal.id}</td>
                     <td>${DateTimeUtil.toString(meal.dateTime)}</td>

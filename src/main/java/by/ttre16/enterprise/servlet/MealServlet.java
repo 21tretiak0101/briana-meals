@@ -2,7 +2,7 @@ package by.ttre16.enterprise.servlet;
 
 import by.ttre16.enterprise.configuration.root.RootContextConfiguration;
 import by.ttre16.enterprise.controller.rest.MealRestController;
-import by.ttre16.enterprise.dto.MealTo;
+import by.ttre16.enterprise.dto.to.MealTo;
 import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.model.User;
 import org.slf4j.Logger;
@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+import static by.ttre16.enterprise.util.SecurityMock.getAuthUserId;
 import static by.ttre16.enterprise.util.web.ActionType.*;
 import static by.ttre16.enterprise.util.profile.ProfileUtil.DATA_JPA;
 import static by.ttre16.enterprise.util.profile.ProfileUtil.DEVELOPMENT;
@@ -58,7 +59,13 @@ public class MealServlet extends HttpServlet {
         LocalTime endTime = getParameter(req, "endTime",
                 LocalTime::parse);
         List<MealTo> meals = controller
-                .getWithExcess(startDate, endDate, startTime, endTime);
+                .getBetween(
+                        startDate,
+                        endDate,
+                        startTime,
+                        endTime,
+                        getAuthUserId()
+                );
         req.setAttribute("meals", meals);
         req.getRequestDispatcher("/meals.jsp").forward(req, resp);
     }
@@ -78,13 +85,13 @@ public class MealServlet extends HttpServlet {
         String action = req.getParameter("action");
         switch (action) {
             case CREATE:
-                controller.create(meal);
+                controller.create(meal, getAuthUserId());
                 break;
             case UPDATE:
-                controller.update(meal, mealId);
+                controller.save(getAuthUserId(), meal, mealId);
                 break;
             case DELETE:
-                controller.delete(mealId);
+                controller.delete(getAuthUserId(), mealId);
                 break;
             default:
                 log.warn("Uncaught action: {}", action);

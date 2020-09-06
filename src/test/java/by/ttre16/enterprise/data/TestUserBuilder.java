@@ -6,7 +6,6 @@ import by.ttre16.enterprise.model.User;
 
 import java.util.Date;
 import java.util.List;
-import static by.ttre16.enterprise.util.entity.MealUtil.DEFAULT_CALORIES_PER_DAY;
 
 public final class TestUserBuilder {
     private Integer id;
@@ -16,7 +15,7 @@ public final class TestUserBuilder {
     private boolean enabled;
     private Date registered = new Date();
     private List<Role> roles;
-    private Integer caloriesPerDay = DEFAULT_CALORIES_PER_DAY;
+    private Integer caloriesPerDay = 2000;
     private List<Meal> meals;
     
     public static TestUserBuilder builder() {
