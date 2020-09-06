@@ -1,6 +1,5 @@
 package by.ttre16.enterprise.security;
 
-import by.ttre16.enterprise.model.AuthenticatedUser;
 import by.ttre16.enterprise.model.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -64,10 +64,9 @@ public class JwtAuthenticationFilter
                 authResult.getAuthorities()
         );
 
-        String bearerToken = "Bearer " + token;
         response.addHeader(
                 jwtService.getAuthorizationHeader(),
-                bearerToken
+                jwtService.createBearerToken(token)
         );
     }
 }

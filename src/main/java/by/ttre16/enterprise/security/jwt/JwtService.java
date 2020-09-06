@@ -32,24 +32,27 @@ public class JwtService {
     @Value("${jwt.validity}")
     private Integer validity;
 
+    @Value("${jwt.tokenPrefix}")
+    private String tokenPrefix;
+
     private String token;
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     @PostConstruct
     public void init() {
         key = Base64.getEncoder().encodeToString(key.getBytes());
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getToken(HttpServletRequest request) {
+    public String parseTokenFromRequest(HttpServletRequest request) {
         return request.getHeader(authorizationHeader);
     }
 
     public boolean isValidToken() {
         return !isEmpty(token)
-                && token.startsWith("Bearer ")
+                && token.startsWith(tokenPrefix)
                 && resolveToken().getExpiration().after(new Date());
     }
 
@@ -66,7 +69,7 @@ public class JwtService {
         return Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(key.getBytes()))
                 .build()
-                .parseClaimsJws(token.replace("Bearer ", ""))
+                .parseClaimsJws(token.replace(tokenPrefix, ""))
                 .getBody();
     }
 
@@ -86,6 +89,10 @@ public class JwtService {
         return authorizationHeader;
     }
 
+    public String getTokenPrefix() {
+        return tokenPrefix;
+    }
+
     public Authentication getAuthentication() {
         return new UsernamePasswordAuthenticationToken(
                 new AuthenticatedUser(
@@ -95,6 +102,10 @@ public class JwtService {
                 null,
                 getAuthorities()
         );
+    }
+
+    public String createBearerToken(String token) {
+        return tokenPrefix + token;
     }
 
     private String parseEmail() {

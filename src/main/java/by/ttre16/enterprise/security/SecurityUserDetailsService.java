@@ -1,9 +1,7 @@
 package by.ttre16.enterprise.security;
 
-import by.ttre16.enterprise.annotation.QualifierRepository;
 import by.ttre16.enterprise.model.User;
 import by.ttre16.enterprise.repository.UserRepository;
-import by.ttre16.enterprise.repository.impl.datajpa.DataJpaUserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,9 +13,7 @@ import static java.lang.String.format;
 public class SecurityUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
-    public SecurityUserDetailsService(
-            @QualifierRepository(DataJpaUserRepository.class)
-            UserRepository userRepository) {
+    public SecurityUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
