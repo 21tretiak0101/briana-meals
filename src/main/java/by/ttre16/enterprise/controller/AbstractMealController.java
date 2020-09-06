@@ -16,7 +16,6 @@ import java.util.List;
 
 import static by.ttre16.enterprise.util.DateTimeUtil.atEndOfDayOrMax;
 import static by.ttre16.enterprise.util.DateTimeUtil.atStartOfDayOrMin;
-import static by.ttre16.enterprise.util.entity.MealUtil.getMealsWithExcess;
 import static by.ttre16.enterprise.util.ValidationUtil.assureIdConsistent;
 import static by.ttre16.enterprise.util.ValidationUtil.checkNew;
 
@@ -69,7 +68,7 @@ public abstract class AbstractMealController {
                 atStartOfDayOrMin(startDate, startTime),
                 atEndOfDayOrMax(endDate, endTime),
                 userId);
-        return getMealsWithExcess(
+        return mealService.getMealsWithExcess(
                 meals,
                 startTime,
                 endTime,

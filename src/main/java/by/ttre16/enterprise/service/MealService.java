@@ -1,39 +1,42 @@
 package by.ttre16.enterprise.service;
 
+import by.ttre16.enterprise.dto.mapper.MealEntityMapper;
+import by.ttre16.enterprise.dto.to.MealTo;
 import by.ttre16.enterprise.model.Meal;
 import by.ttre16.enterprise.repository.MealRepository;
-import by.ttre16.enterprise.repository.impl.inmemory.InMemoryMealRepository;
-import by.ttre16.enterprise.util.exception.NotFoundException;
+import by.ttre16.enterprise.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import static by.ttre16.enterprise.util.DateTimeUtil.atStartOfDayOrMin;
-import static by.ttre16.enterprise.util.DateTimeUtil.atEndOfDayOrMax;
+import static by.ttre16.enterprise.util.DateTimeUtil.*;
 import static by.ttre16.enterprise.util.ValidationUtil.checkNotFound;
 import static by.ttre16.enterprise.util.ValidationUtil.checkNotFoundWithId;
 import static java.lang.String.format;
+import static java.util.Objects.isNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
 @Transactional
 public class MealService {
     private final MealRepository repository;
+    private final MealEntityMapper mapper;
     private static final Logger log = getLogger(MealService.class);
 
     @Autowired
-    public MealService(MealRepository repository) {
+    public MealService(MealRepository repository, MealEntityMapper mapper) {
         this.repository = repository;
-    }
-
-    public MealService() {
-        this.repository = new InMemoryMealRepository();
+        this.mapper = mapper;
     }
 
     public List<Meal> getAllByUserId(Integer userId) {
@@ -75,5 +78,25 @@ public class MealService {
     public Meal getWithUser(Integer userId, Integer id) {
         return checkNotFound(repository.getWithUser(userId, id)
                 .orElse(null), format("userId=%s, id=%s", userId, id));
+    }
+
+    public List<MealTo> getMealsWithExcess(List<Meal> meals,
+            LocalTime startTime, LocalTime endTime, Integer caloriesPerDay) {
+        LocalTime start = isNull(startTime) ? LocalTime.MIN : startTime;
+        LocalTime end = isNull(endTime) ? LocalTime.MAX : endTime;
+        Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
+                .collect(Collectors.groupingBy(Meal::getDate,
+                        Collectors.summingInt(Meal::getCalories)));
+        return meals.stream()
+                .filter(meal -> isBetweenHalfOpen(
+                        meal.getDateTime().toLocalTime(), start, end))
+                .map(meal -> {
+                    MealTo mealTo = mapper.toDto(meal);
+                    mealTo.setExcess(
+                        caloriesSumByDate.get(meal.getDate()) > caloriesPerDay
+                    );
+                    return mealTo;
+                })
+                .collect(Collectors.toList());
     }
 }
