@@ -30,7 +30,7 @@
         <hamcrest.version>2.2</hamcrest.version>
         <jayway-jsonpath.version>2.4.0</jayway-jsonpath.version>
         <javax-cache.version>1.1.1</javax-cache.version>
-        <junit.version>4.13</junit.version>
+        <junit.version>4.13.1</junit.version>
         <google-annotations.version>3.0.1</google-annotations.version>
         <assertj.version>3.16.1</assertj.version>
         <hibernate.version>5.4.17.Final</hibernate.version>
