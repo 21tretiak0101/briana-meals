@@ -33,7 +33,7 @@
         <junit.version>4.13.1</junit.version>
         <google-annotations.version>3.0.1</google-annotations.version>
         <assertj.version>3.16.1</assertj.version>
-        <hibernate.version>5.4.17.Final</hibernate.version>
+        <hibernate.version>5.4.24.Final</hibernate.version>
         <hibernate-validator.version>6.1.5.Final</hibernate-validator.version>
         <postgresql.version>42.2.25</postgresql.version>
         <hsqldb.version>2.5.1</hsqldb.version>
