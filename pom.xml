@@ -35,7 +35,7 @@
         <assertj.version>3.16.1</assertj.version>
         <hibernate.version>5.4.17.Final</hibernate.version>
         <hibernate-validator.version>6.1.5.Final</hibernate-validator.version>
-        <postgresql.version>42.2.25</postgresql.version>
+        <postgresql.version>42.3.3</postgresql.version>
         <hsqldb.version>2.5.1</hsqldb.version>
         <ehcache.version>3.8.1</ehcache.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
