@@ -20,7 +20,7 @@
         <slf4j.version>1.7.25</slf4j.version>
         <logback.version>1.2.3</logback.version>
         <jstl.version>1.2</jstl.version>
-        <jackson-json.version>2.11.2</jackson-json.version>
+        <jackson-json.version>2.12.7.1</jackson-json.version>
         <tomcat.version>9.0.36</tomcat.version>
         <mapstruct.version>1.3.1.Final</mapstruct.version>
         <javax-el.version>3.0.0</javax-el.version>
